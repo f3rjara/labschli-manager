@@ -22,14 +22,21 @@ jobs:
 
       - name: Build
         run: npm run build -- --configuration production --base-href=/
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
 
-      - name: Checkout to prod-app branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.email "f3rjara@gmail.com"
-          git config user.name "PlayTIC"
-          git checkout -b prod-app
-          git add -f public/
-          git commit -m "Build for prod to prod-app branch"
-          git push origin prod-app
+      - name: Deploy 🚀
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_branch: prod-app
+          deploy_key: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          external_repository: LuisDaniel90/app-angular
+          enable_jekyll: true
+          user_name: 'PlayTIC'
+          user_email: 'f3rjara@gmail.com'
+          commit_message: 'Deploying to prod-app'
