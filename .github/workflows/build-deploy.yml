@@ -25,6 +25,8 @@ jobs:
 
       - name: Checkout to prod-app branch
         run: |
+          git config user.email "ldanielcabreral@gmail.com"
+          git config user.name "Daniel Cabrera"
           git checkout -b prod-app
           git add -f public/
           git commit -m "Build for prod to prod-app branch"
