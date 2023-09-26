@@ -22,11 +22,6 @@ jobs:
 
       - name: Build
         run: npm run build -- --configuration production --base-href=/
-        
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
 
       - name: Deploy 🚀
         if: success()
