@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build -- --configuration production --base-href=/
+        run: npm run build -- --configuration production --base-href=https://labchsl.com/
 
       - name: Deploy to prod-app branch
         uses: JamesIves/github-pages-deploy-action@4.1.5
