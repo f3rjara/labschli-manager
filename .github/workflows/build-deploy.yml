@@ -30,8 +30,9 @@ jobs:
           git config user.email "ldanielcabreral@gmail.com"
           git config user.name "PlayTIC"
           git checkout prod-app || git checkout -b prod-app
-          rm -rf *
-          cp -r ../public/* .
+          git rm -r --cached .
+          git clean -df
+          cp -r public/* .
           git add -A
           git commit -m "Build for prod to prod-app branch"
           git push origin prod-app
