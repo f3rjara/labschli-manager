@@ -22,6 +22,11 @@ jobs:
 
       - name: Build
         run: npm run build -- --configuration production --base-href=/
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
 
       - name: Construccion to prod-app branch
         env:
@@ -36,3 +41,4 @@ jobs:
           git add -A
           git commit -m "Build for prod to prod-app branch"
           git push origin prod-app
+
