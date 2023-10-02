@@ -1,0 +1,46 @@
+<main class="bg-[#3f51b5] w-screen h-screen flex items-center justify-center">
+  <section class="w-96 flex flex-col bg-slate-200 shadow-md rounded-md	 ">
+    <mat-card appearance="outlined" class="p-5">
+      <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+        <mat-card-content>
+          <h1 class="text-center mb-4">Iniciar Sesión</h1>
+          <mat-form-field class="w-full my-3">
+            <mat-label>Correo</mat-label>
+            <input matInput placeholder="Email" autocomplete="off" formControlName="email"  />
+            <mat-error *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+              Por favor ingrese un email válido
+            </mat-error>
+            <mat-error *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+              El correo <strong>es requerido</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-full my-3">
+            <mat-label>Contraseña</mat-label>
+            <input
+              class="bg-current"
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              formControlName="password" />
+            <button type="button" matSuffix mat-icon-button (click)="showPassword = !showPassword">
+              <mat-icon *ngIf="showPassword">visibility</mat-icon>
+              <mat-icon *ngIf="!showPassword">visibility_off</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+              La Contraseña debe tener al menos <strong>6 caracteres</strong>
+            </mat-error>
+            <mat-error *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+              La Contraseña <strong>es requerida</strong>
+            </mat-error>
+          </mat-form-field>
+          <div class="flex w-full justify-center">
+            <button *ngIf="!showSpinner" [disabled]="form.valid" mat-raised-button class="w-full" color="primary" type="submit">
+              Iniciar sesión
+            </button>
+            <mat-spinner *ngIf="showSpinner" />
+          </div>
+        </mat-card-content>
+      </form>
+    </mat-card>
+  </section>
+</main>
