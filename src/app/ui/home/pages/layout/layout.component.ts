@@ -16,7 +16,8 @@ export interface PeriodicElement {
 const ELEMENT_DATA: PeriodicElement[] = [
   {name: 'Documento 1' , type: 'pdf', weight: 1.79, action: 'descargar'},
   {name: 'Documento 2' , type: 'pdf', weight: 4.26, action: 'descargar'},
-  {name: 'Documento 3' , type: 'pdf', weight: 6.94, action: 'descargar'}
+  {name: 'Documento 3' , type: 'pdf', weight: 6.94, action: 'descargar'},
+  {name: 'Documento 4' , type: 'pdf', weight: 6.94, action: 'descargar'}
 ];
 
 @Component({
