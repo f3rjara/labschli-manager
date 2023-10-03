@@ -15,6 +15,21 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: () => import('./../dashboard/dashboard.routes').then(m => m.routes),
         title: 'App - Dashboard'
+      },
+      {
+        path: 'usuarios',
+        loadChildren: () => import('./../usuarios/usuarios.routes').then(m => m.routes),
+        title: 'App - Usuarios'
+      },
+      {
+        path: 'perfil',
+        loadChildren: () => import('./../perfil/perfil.routes').then(m => m.routes),
+        title: 'App - Perfil'
+      },
+      {
+        path: 'roles',
+        loadChildren: () => import('./../roles/roles.routes').then(m => m.routes),
+        title: 'App - Roles'
       }
     ]
   }
