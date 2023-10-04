@@ -1,68 +1,72 @@
 <main class="bg-[#3f51b5] w-screen h-screen flex items-center justify-center">
-  <section class="w-96 flex flex-col bg-slate-200 shadow-md rounded-md	 ">
+  <section class="w-96 flex flex-col bg-slate-200 shadow-md rounded-md">
     <mat-card appearance="outlined" class="p-5">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Ingresa a tu cuenta</h2>
+        <img
+          class="mx-auto h-10 w-auto"
+          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+          alt="Your Company" />
+        <h2 class="mt-2 mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Ingresa a tu cuenta</h2>
       </div>
 
       <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
         <mat-card-content>
-          <mat-form-field class="w-full mt-3">
-            <div>
-              <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo electrónico</label>
-              <div class="mt-2">
-                <input id="email" type="email"
-                placeholder="Email" autocomplete="off" formControlName="email"
-                class="rounded-none h-12 px-2 block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              </div>
-              <mat-error class="text-xs text-red-600" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-                Por favor ingrese un email válido
-              </mat-error>
-              <mat-error class="text-xs text-red-600" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
-                El correo <strong>es requerido</strong>
-              </mat-error>
-            </div>
-
-          </mat-form-field>
-          <mat-form-field class="w-full mb-3">
-            <div>
-              <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Contraseña</label>
-              <div class="mt-2 flex">
-                <input id="password"
-                [type]="showPassword ? 'text' : 'password'"
-                placeholder="password" autocomplete="off" formControlName="password"
-                class="rounded-none h-12 px-2 block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                <button
-                class="bg-indigo-600 text-white px-3 border-none outline-none"
-                type="button" matSuffix  (click)="showPassword = !showPassword">
-                  <mat-icon *ngIf="showPassword">visibility</mat-icon>
-                  <mat-icon *ngIf="!showPassword">visibility_off</mat-icon>
-                </button>
-              </div>
-              <mat-error class="text-xs text-red-600" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
-                Digite mínimo <strong>6 caracteres</strong>
-              </mat-error>
-              <mat-error class="text-xs text-red-600" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
-                La Contraseña <strong>es requerida</strong>
-              </mat-error>
-            </div>
+          <mat-form-field class="w-full mb-2">
+            <mat-label>Correo</mat-label>
+            <input matInput placeholder="Digite un correo valido" autocomplete="off" formControlName="email" />
+            <mat-error
+              class="text-xs text-red-600"
+              *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+              Por favor ingrese un correo válido
+            </mat-error>
+            <mat-error
+              class="text-xs text-red-600"
+              *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+              El correo <strong>es requerido</strong>
+            </mat-error>
           </mat-form-field>
 
-          <div class="flex w-full justify-center">
+          <mat-form-field class="w-full">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Digite una contraseña valida"
+              formControlName="password" />
+            <button type="button" matSuffix mat-icon-button (click)="showPassword = !showPassword">
+              <mat-icon *ngIf="showPassword">visibility</mat-icon>
+              <mat-icon *ngIf="!showPassword">visibility_off</mat-icon>
+            </button>
+            <mat-error
+              class="text-xs text-red-600"
+              *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+              Digite mínimo <strong>6 caracteres</strong>
+            </mat-error>
+            <mat-error
+              class="text-xs text-red-600"
+              *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+              La Contraseña <strong>es requerida</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <section class="flex w-full justify-center mt-2">
             <button
-            *ngIf="!showSpinner"
-            [ngClass]="{'bg-slate-400 hover:bg-slate-400' : form.invalid}"
-            [disabled]="form.invalid"
-            class=" flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" color="primary" type="submit">
+              *ngIf="!showSpinner"
+              [ngClass]="{ 'bg-slate-400 hover:bg-slate-400': form.invalid }"
+              [disabled]="form.invalid"
+              class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-4 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              color="primary"
+              type="submit">
               Iniciar sesión
             </button>
-            <mat-spinner *ngIf="showSpinner" />
-          </div>
+          </section>
+          <ng-container>
+            <section class="flex w-full justify-center py-4">
+              <mat-spinner [diameter]="48" *ngIf="!showSpinner" />
+            </section>
+          </ng-container>
         </mat-card-content>
       </form>
     </mat-card>
   </section>
 </main>
-
-

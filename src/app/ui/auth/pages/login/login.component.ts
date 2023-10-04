@@ -10,23 +10,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
-
+const MATERIAL_MODULES = [
+  MatCardModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatButtonModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  MatSnackBarModule,
+];
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    MatCardModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    NgIf,
-    NgClass,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-  ],
+  imports: [ReactiveFormsModule, NgIf, NgClass, ...MATERIAL_MODULES],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -56,6 +54,14 @@ export class LoginComponent {
   private _snackBar = inject(MatSnackBar);
 
   /**
+   * Permite cambiar el título de la página.
+   * @memberof LoginComponent
+   * @private
+   * @readonly
+   */
+  private _titleService = inject(Title);
+
+  /**
    * Permite mostrar u ocultar la contraseña del usuario.
    * @type {boolean}
    * @memberof LoginComponent
@@ -71,7 +77,6 @@ export class LoginComponent {
    */
   showSpinner = false;
 
-
   /**
    * Permite crear un formulario reactivo para el inicio de sesión.
    * @type {FormGroup}
@@ -80,8 +85,9 @@ export class LoginComponent {
    */
   form!: FormGroup;
 
-  constructor(){
+  constructor() {
     this.buildForm();
+    this._titleService.setTitle('LABCHSL | Iniciar Sesión');
   }
 
   /**
@@ -91,8 +97,8 @@ export class LoginComponent {
    */
   private buildForm() {
     this.form = this._fb.nonNullable.group({
-      email: ['admin@mail.com', [Validators.required, Validators.email]],
-      password: ['admin123', [Validators.required, Validators.minLength(6)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -104,7 +110,7 @@ export class LoginComponent {
   onSubmit(): void {
     this.showSpinner = true;
 
-    if( this.form.invalid ) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.showSpinner = false;
       this.openSnackBar('Invalid credentials', 'Close');
@@ -118,10 +124,10 @@ export class LoginComponent {
   }
 
   /**
-  * Permite mostrar un mensaje de error tupo alera¿ta en caso de que el usuario o la contraseña sean incorrectos.
-  * @param message
-  * @param action
-  */
+   * Permite mostrar un mensaje de error tupo alera¿ta en caso de que el usuario o la contraseña sean incorrectos.
+   * @param message
+   * @param action
+   */
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, { duration: 5000 });
   }
