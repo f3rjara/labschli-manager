@@ -1,0 +1,46 @@
+<div class="sm:mx-auto sm:w-full sm:max-w-sm pt-12">
+  <img
+    class="mx-auto h-10 w-auto"
+    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+    alt="Your Company" />
+  <h2 class="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Consultar certificados</h2>
+</div>
+
+<section class="container mx-auto mt-5 w-2/5">
+
+  <form [formGroup]="formSearch" novalidate (ngSubmit)="onSubmit()">
+    <mat-card-content>
+      <mat-form-field class="w-full mb-2">
+        <mat-label>Número de Documento</mat-label>
+        <input matInput placeholder="Digite su documento " autocomplete="off" formControlName="document" />
+        <mat-error
+          class="text-xs text-red-600"
+          *ngIf="formSearch.get('document')?.touched && formSearch.get('document')?.hasError('minlength') || formSearch.get('document')?.hasError('pattern')">
+          Por favor ingrese un documento válido
+        </mat-error>
+        <mat-error
+          class="text-xs text-red-600"
+          *ngIf="formSearch.get('document')?.touched && formSearch.get('document')?.hasError('required')">
+          El Número de Documento <strong>es requerido</strong>
+        </mat-error>
+      </mat-form-field>
+      <section class="flex w-full justify-center mt-2">
+        <button
+          [ngClass]="{ 'bg-slate-400 hover:bg-slate-400': formSearch.invalid }"
+          [disabled]="formSearch.invalid"
+          class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-4 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          color="primary"
+          type="submit">
+          Consultar
+        </button>
+      </section>
+      <ng-container>
+        <section class="flex w-full justify-center py-4 pt-6">
+          <mat-spinner [diameter]="48" *ngIf="showSpinner" />
+        </section>
+      </ng-container>
+    </mat-card-content>
+  </form>
+
+
+</section>
