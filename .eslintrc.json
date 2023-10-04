@@ -34,7 +34,9 @@
             "type": "attribute"
           }
         ],
-        "prettier/prettier": "warn",
+        "prettier/prettier": ["error",{
+          "endOfLine": "auto"
+        }],
         "arrow-body-style": "off",
         "prefer-arrow-callback": "off",
         "object-curly-spacing": "off",

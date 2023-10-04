@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "prod": "ng build --base-href=/",
-    "prepare": "ng lint && eslint --fix && husky install",
+    "prepare": "husky install",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage --coverageReporters=text",

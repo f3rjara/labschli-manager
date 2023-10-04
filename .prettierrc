@@ -31,5 +31,6 @@
         "singleQuote": true
       }
     }
-  ]
+  ],
+  "endOfLine": "auto"
 }
