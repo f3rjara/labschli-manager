@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuardFn } from './core/guards/auth-fn.guard';
 
 export const routes: Routes = [
   {
@@ -8,6 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [authGuardFn],
     loadChildren: () => import('./ui/admin/admin.routes').then(admin => admin.routes),
   },
   {

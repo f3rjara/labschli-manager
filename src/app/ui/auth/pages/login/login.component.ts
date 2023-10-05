@@ -2,7 +2,10 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { AuthService } from '@services/auth/auth.service';
 
+/* Material Modeules */
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +13,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Title } from '@angular/platform-browser';
 
 const MATERIAL_MODULES = [
   MatCardModule,
@@ -62,6 +64,14 @@ export class LoginComponent {
   private _titleService = inject(Title);
 
   /**
+   * Permite controlar el inicio de sesión de un usuario.
+   * @memberof LoginComponent
+   * @private
+   * @readonly
+   */
+  private _auth = inject(AuthService);
+
+  /**
    * Permite mostrar u ocultar la contraseña del usuario.
    * @type {boolean}
    * @memberof LoginComponent
@@ -97,8 +107,8 @@ export class LoginComponent {
    */
   private buildForm() {
     this.form = this._fb.nonNullable.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: ['test@gmail.com', [Validators.required, Validators.email]],
+      password: ['123456', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -112,15 +122,27 @@ export class LoginComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.openSnackBar('Verifica tus datos', 'cerrar');
       this.showSpinner = false;
-      this.openSnackBar('Invalid credentials', 'Close');
       return;
     }
-    const { email, password } = this.form.getRawValue();
 
-    //TODO: CONSUMIR EL SERVICIO DE AUTH PARA LOGIN
-    this.showSpinner = false;
-    this._router.navigate(['/admin']);
+    const { email, password } = this.form.getRawValue();
+    this._auth.login( email, password )
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this._router.navigate(['/admin'])
+        },
+        error: (error) => {
+          console.error(error.error.message)
+          this.showSpinner = false;
+          this.openSnackBar('El usuario o contraseña son invalidos', 'cerrar');
+        },
+        complete: () => {
+          this.showSpinner = false;
+        }
+      })
   }
 
   /**
@@ -129,6 +151,10 @@ export class LoginComponent {
    * @param action
    */
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, { duration: 5000 });
+    this._snackBar.open(message, action, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }
