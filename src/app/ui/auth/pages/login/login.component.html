@@ -6,7 +6,9 @@
           class="mx-auto h-10 w-auto"
           src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
           alt="Your Company" />
-        <h2 class="mt-2 mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Ingresa a tu cuenta</h2>
+        <h2 class="mt-2 mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Ingresa a tu cuenta
+        </h2>
       </div>
 
       <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
@@ -62,7 +64,7 @@
           </section>
           <ng-container>
             <section class="flex w-full justify-center py-4">
-              <mat-spinner [diameter]="48" *ngIf="!showSpinner" />
+              <mat-spinner [diameter]="48" *ngIf="showSpinner" />
             </section>
           </ng-container>
         </mat-card-content>
