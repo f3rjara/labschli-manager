@@ -4,12 +4,12 @@ export const CTA_CARDS:ICtaCards[] = [
   {
     title: 'Nuevo Usuario',
     icon: 'person_add',
-    routerLink: '/admin/usuarios'
+    routerLink: '/admin/usuarios/agregar'
   },
   {
-    title: 'Buscar Usuario',
+    title: 'Listar Usuarios',
     icon: 'person_search',
-    routerLink: '/admin/usuarios'
+    routerLink: '/admin/usuarios/list'
   },
   {
     title: 'Documentos del Usuario',

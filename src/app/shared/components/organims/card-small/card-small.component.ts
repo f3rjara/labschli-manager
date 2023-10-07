@@ -33,6 +33,7 @@ export class CardSmallComponent {
   navigateTo( link: string , external: boolean = false) {
     if( external ) {
       window.open(link, '_blank');
+      return;
     }
     this._router.navigate([link]);
   }
