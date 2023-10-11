@@ -6,6 +6,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CTA_CARDS_USERS_ADMIN } from '../../utils/cta-cards-users.constant';
 import { ICtaCards } from '@interfaces/cta-cards.interface';
 import { NavbarCardsCtaComponent } from '@organims/navbar-cards-cta/navbar-cards-cta.component';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { IUser, IUserRegister } from '@app/core/models/auth/user-register.model';
 
 // ANGULAR MATERIAL MODULES
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+
 
 /** ANGULAR MATERIAL MODULES */
 
@@ -53,6 +56,13 @@ export class AdminUserComponent implements OnInit {
    * @private
    */
   private _route = inject(ActivatedRoute);
+
+   /**
+   * Variable que contiene los datos del usuario
+   * @property {AuthService} _auth
+   * @private
+   */
+  private _auth = inject(AuthService);
 
   /**
    * Variable que contiene el id del usuario
@@ -127,7 +137,32 @@ export class AdminUserComponent implements OnInit {
    * @memberof AdminUserComponent
    */
   onSubmit(): void {
-    console.log('this.formNewUser', this.formNewUser.value)
+    if (this.formNewUser.valid && !this.flagUserEdit) {
+      console.log('this.formNewUser', this.formNewUser.value);
+      const user:IUser = this.builderUser(this.formNewUser.value);
+      this._auth.registerUser(user).subscribe({
+        next:(response)=>{
+          console.log(response);
+        },
+        error:(error)=>{
+          console.log(error);
+        }
+      })
+    }
+
+  }
+
+  builderUser(formUser:any):IUser{
+    return {
+      numid : formUser.documentUser,
+      tipoid : formUser.tipoDoc,
+      name : formUser.nameUser,
+      lastname : formUser.lastNameUser,
+      phone : formUser.phoneUser,
+      email : formUser.correoUser,
+      rol : formUser.roleUser
+    }
+
   }
 
 }

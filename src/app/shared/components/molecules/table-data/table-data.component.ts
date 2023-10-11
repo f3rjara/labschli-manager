@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 /* Angular Material */
 
@@ -10,7 +10,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { DATA_USER_MOCK } from './data.mock';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { EmptyUsersComponent } from '../../atoms/empty-users/empty-users.component';
 import { EmptyDataTableComponent } from '../../organims/empty-data-table/empty-data-table.component';
 
 const MATERIAL_MODULES = [MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule];
@@ -29,26 +28,29 @@ export interface UserData {
   templateUrl: './table-data.component.html',
   styleUrls: ['./table-data.component.scss']
 })
-export class TableDataComponent implements AfterViewInit {
+export class TableDataComponent implements AfterViewInit, OnInit {
+
+  private _cd = inject(ChangeDetectorRef);
 
   @Input() columnsTable: string[] = ['id', 'name', 'progress', 'fruit'];
   @Input() dataTable: any[] = [];
 
-  displayedColumns: string[];
-  dataSource: MatTableDataSource<any>;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() {
-    this.dataTable = DATA_USER_MOCK;
-    this.displayedColumns = this.columnsTable;
-    this.dataSource = new MatTableDataSource(this.dataTable);
+
+  ngOnInit(): void {
+    this.dataSource = new MatTableDataSource<any>(this.dataTable);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    console.log(this.dataSource)
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    console.log(this.columnsTable, this.dataTable );
+    this._cd.detectChanges();
   }
 
   applyFilter(event: Event) {

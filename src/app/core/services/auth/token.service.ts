@@ -26,7 +26,7 @@ export class TokenService {
    * @returns {string} token
    */
   getToken(): string | null{
-    return localStorage.getItem('token_labchls') || null;
+    return localStorage.getItem('token') || null;
   }
 
   /**

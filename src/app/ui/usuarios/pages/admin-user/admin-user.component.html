@@ -10,7 +10,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Nombres Completos</mat-label>
-      <input matInput placeholder="Nombre del usuario">
+      <input matInput placeholder="Nombre del usuario"  autocomplete="off" formControlName="nameUser">
       <mat-hint>Ingrese un nombre valido</mat-hint>
       <mat-error class="text-xs text-red-600"
         *ngIf="formNewUser.get('nameUser')?.touched && formNewUser.get('nameUser')?.hasError('length')">
@@ -21,7 +21,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Apellidos Completos</mat-label>
-      <input matInput placeholder="Apellidos del usuario">
+      <input matInput placeholder="Apellidos del usuario"  autocomplete="off" formControlName="lastNameUser">
       <mat-hint>Ingrese un apellido valido</mat-hint>
       <mat-error class="text-xs text-red-600"
         *ngIf="formNewUser.get('lastNameUser')?.touched && formNewUser.get('lastNameUser')?.hasError('length')">
@@ -31,8 +31,8 @@
 
 
     <mat-form-field appearance="fill" class="w-full mb-4">
-      <mat-label>Seleccione el tipo de documento</mat-label>
-      <mat-select>
+      <mat-label >Seleccione el tipo de documento</mat-label>
+      <mat-select  autocomplete="off" formControlName="tipoDoc">
         <mat-option value="CC">Cedula de ciudadania</mat-option>
         <mat-option value="00">Otro</mat-option>
       </mat-select>
@@ -42,7 +42,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Número de documento</mat-label>
-      <input matInput placeholder="Número de documento del usuario" type="number">
+      <input matInput placeholder="Número de documento del usuario" type="number"  autocomplete="off" formControlName="documentUser">
       <mat-hint>Ingrese un número de documento valido</mat-hint>
       <mat-error class="text-xs text-red-600"
         *ngIf="formNewUser.get('documentUser')?.touched && formNewUser.get('documentUser')?.hasError('length')">
@@ -52,7 +52,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Correo electrónico</mat-label>
-      <input matInput placeholder="Correo electrónico del usuario" type="email">
+      <input matInput placeholder="Correo electrónico del usuario" type="email"  autocomplete="off" formControlName="correoUser">
       <mat-hint>Ingrese un correo electrónico valido</mat-hint>
       <mat-error class="text-xs text-red-600"
         *ngIf="formNewUser.get('correoUser')?.touched && formNewUser.get('correoUser')?.hasError('length')">
@@ -62,7 +62,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Número de celular</mat-label>
-      <input matInput placeholder="Número de celular del usuario" type="number">
+      <input matInput placeholder="Número de celular del usuario" type="number"  autocomplete="off" formControlName="phoneUser">
       <mat-hint>Ingrese un número de celular valido</mat-hint>
       <mat-error class="text-xs text-red-600"
         *ngIf="formNewUser.get('phoneUser')?.touched && formNewUser.get('phoneUser')?.hasError('length')">
@@ -72,7 +72,7 @@
 
     <mat-form-field appearance="fill" class="w-full mb-4">
       <mat-label>Seleccione el rol del usuario</mat-label>
-      <mat-select [(value)]="selectedRole">
+      <mat-select [(value)]="selectedRole"  autocomplete="off" formControlName="roleUser">
         <mat-option value="user">Usuario</mat-option>
         <mat-option value="admin">Administrador</mat-option>
       </mat-select>
