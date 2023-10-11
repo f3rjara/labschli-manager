@@ -5,6 +5,7 @@ import { TokenService } from './token.service';
 import { IUserAuth } from '@core/models/auth/user.model';
 import { LoginResponse } from '@core/models/auth/login-response.model';
 import { environment } from 'src/environments/environment';
+import { IUser, IUserRegister } from '@core/models/auth/user-register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class AuthService {
    * @returns
    */
   login(email: string, password: string) {
-    const URL = `${environment.API_URL}/v1/auth/login`;
+    const URL = `${environment.API_URL}/login`;
     return this._http.post<LoginResponse>(URL, {email, password})
     .pipe(
       tap(response => this._tokenService.saveToken(response.access_token)),
@@ -69,7 +70,7 @@ export class AuthService {
    * @returns {void}
    */
   getProfile() {
-    const url = `${environment.API_URL}/auth/profile`;
+    const url = `${environment.API_URL}/user`;
     return this._http.get<IUserAuth>(url);
   }
 
@@ -81,5 +82,10 @@ export class AuthService {
   */
   logout() {
     this._tokenService.clearToken();
+  }
+
+  registerUser(user:IUser){
+    const url = `${environment.API_URL}/register`;
+    return this._http.post<any>(url,user);
   }
 }
