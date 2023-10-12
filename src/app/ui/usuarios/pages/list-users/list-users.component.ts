@@ -6,6 +6,7 @@ import { CTA_CARDS_USERS } from '../../utils/cta-cards-users.constant';
 import { NavbarCardsCtaComponent } from '@organims/navbar-cards-cta/navbar-cards-cta.component';
 import { UserService } from '@app/core/services/users/users.service';
 import { IUserRegister } from '@app/core/models/auth/user-register.model';
+import { DATA_USER_MOCK } from '@app/shared/components/molecules/table-data/data.mock';
 
 @Component({
   selector: 'app-list-users',
@@ -16,7 +17,7 @@ import { IUserRegister } from '@app/core/models/auth/user-register.model';
 })
 export class ListUsersComponent implements OnInit {
   private _users = inject(UserService);
-  columnsUsers: string[] = ['id', 'tipoid', 'name', 'lastname', 'email'];
+  columnsUsers: string[] = ['id', 'tipoid', 'name', 'lastname', 'email','show'];
   dataUsers: any[] = [];
 
   get ctaCards(): ICtaCards[] {
@@ -26,11 +27,8 @@ export class ListUsersComponent implements OnInit {
   ngOnInit(): void {
     this._users.listUser().subscribe({
       next: (users: IUserRegister[]) => {
-
         this.dataUsers = this.mapUserResponse(users);
-        console.log(this.dataUsers);
-
-
+        this._users.setUserData(this.dataUsers);
       },
       error: (error) => {
         console.log(error);
@@ -47,6 +45,7 @@ export class ListUsersComponent implements OnInit {
         name: element.name,
         lastname: element.lastname,
         email: element.email,
+        show: `/admin/usuarios/editar/${element.id}`
       };
     });
 
