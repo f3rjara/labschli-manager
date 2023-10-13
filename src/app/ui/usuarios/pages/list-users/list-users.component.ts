@@ -6,7 +6,6 @@ import { CTA_CARDS_USERS } from '../../utils/cta-cards-users.constant';
 import { NavbarCardsCtaComponent } from '@organims/navbar-cards-cta/navbar-cards-cta.component';
 import { UserService } from '@app/core/services/users/users.service';
 import { IUserRegister } from '@app/core/models/auth/user-register.model';
-import { DATA_USER_MOCK } from '@app/shared/components/molecules/table-data/data.mock';
 
 @Component({
   selector: 'app-list-users',
@@ -17,7 +16,7 @@ import { DATA_USER_MOCK } from '@app/shared/components/molecules/table-data/data
 })
 export class ListUsersComponent implements OnInit {
   private _users = inject(UserService);
-  columnsUsers: string[] = ['id', 'tipoid', 'name', 'lastname', 'email','show'];
+  columnsUsers: string[] = ['id', 'tipoid', 'numid', 'name', 'lastname', 'email','show'];
   dataUsers: any[] = [];
 
   get ctaCards(): ICtaCards[] {
@@ -42,6 +41,7 @@ export class ListUsersComponent implements OnInit {
       return {
         id: element.id,
         tipoid: element.tipoid,
+        numid: element.numid,
         name: element.name,
         lastname: element.lastname,
         email: element.email,

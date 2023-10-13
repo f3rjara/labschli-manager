@@ -3,7 +3,12 @@ import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ApplicationConfig } from '@angular/platform-browser';
 import { TokenInterceptor } from './core/interceptors/auth/token.interceptor';
+import { LOCALE_ID } from '@angular/core';
+import es from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
 import { routes } from './app.routes';
+
+registerLocaleData(es);
 
 export const AppConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +18,7 @@ export const AppConfig: ApplicationConfig = {
       useClass: TokenInterceptor,
       multi: true
     },
+    { provide: LOCALE_ID, useValue: 'es-CO' },
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
   ],

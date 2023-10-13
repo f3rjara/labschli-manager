@@ -1,0 +1,11 @@
+<div class="grid grid-rows-1 mb-5">
+  <p>
+    Para agregar un nuevo <b>Administrador</b>, este de ser creado primero como un usuario tipo <code>'admin'</code>
+  </p>
+  <p>Si desea actualizar un usuario como administrador, busque y modifique el tipo de rol del usuario.</p>
+</div>
+
+<app-table-data
+  [columnsTable]="columnsUsers"
+  [emptyTitleTable]="'No hay administradores por Mostrar'">
+</app-table-data>

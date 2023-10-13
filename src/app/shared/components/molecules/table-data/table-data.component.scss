@@ -10,3 +10,18 @@ table {
 td, th {
   width: 25%;
 }
+
+.example-button-container {
+  display: flex;
+  width: 80px;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: rgb(248 250 252);
+}
+
+.show-mat-spinner {
+  display: grid;
+  place-content: center;
+  padding: 5em 0;
+}

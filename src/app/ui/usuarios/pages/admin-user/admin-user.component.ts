@@ -7,7 +7,8 @@ import { CTA_CARDS_USERS_ADMIN } from '../../utils/cta-cards-users.constant';
 import { ICtaCards } from '@interfaces/cta-cards.interface';
 import { NavbarCardsCtaComponent } from '@organims/navbar-cards-cta/navbar-cards-cta.component';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { IUser, IUserRegister } from '@app/core/models/auth/user-register.model';
+import { IUser } from '@app/core/models/auth/user-register.model';
+import { UserService } from '@services/users/users.service';
 
 // ANGULAR MATERIAL MODULES
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 /** ANGULAR MATERIAL MODULES */
 
@@ -24,16 +25,16 @@ const MATERIAL_MODULES = [
   MatInputModule,
   MatIconModule,
   MatSelectModule,
-  MatButtonModule
+  MatButtonModule,
+  MatSnackBarModule,
 ];
-
 
 @Component({
   selector: 'app-admin-user',
   standalone: true,
-  imports: [CommonModule, NavbarCardsCtaComponent, ReactiveFormsModule,  ...MATERIAL_MODULES],
+  imports: [CommonModule, NavbarCardsCtaComponent, ReactiveFormsModule, ...MATERIAL_MODULES],
   templateUrl: './admin-user.component.html',
-  styleUrls: ['./admin-user.component.scss']
+  styleUrls: ['./admin-user.component.scss'],
 })
 /**
  * Esta clase permite administrar los usuarios - Agregar y editar un usuario
@@ -41,7 +42,6 @@ const MATERIAL_MODULES = [
  * @constructor
  */
 export class AdminUserComponent implements OnInit {
-
   /**
    * Permite crear un formulario reactivo para el inicio de sesión.
    * @param {FormBuilder} fb
@@ -57,12 +57,21 @@ export class AdminUserComponent implements OnInit {
    */
   private _route = inject(ActivatedRoute);
 
-   /**
+  /**
    * Variable que contiene los datos del usuario
    * @property {AuthService} _auth
    * @private
    */
   private _auth = inject(AuthService);
+
+  /**
+   * Variable que contiene los datos del usuario
+   * @property {UserService} _user
+   * @private
+   */
+  private _user = inject(UserService);
+
+  private _snackBar = inject(MatSnackBar);
 
   /**
    * Variable que contiene el id del usuario
@@ -79,13 +88,13 @@ export class AdminUserComponent implements OnInit {
 
   flagUserEdit: boolean = false;
 
-   /**
+  /**
    * Permite crear un formulario reactivo para el inicio de sesión.
    * @type {FormGroup}
    * @memberof LoginComponent
    * @public
    */
-   formNewUser!: FormGroup;
+  formNewUser!: FormGroup;
 
   /**
    * Select por defecto para rol de usuario
@@ -93,7 +102,7 @@ export class AdminUserComponent implements OnInit {
    * @public
    * @default 'option2'
    */
-   selectedRole = 'user';
+  selectedRole = 'user';
 
   /**
    * Variable que contiene los datos de los botones de acción
@@ -101,7 +110,7 @@ export class AdminUserComponent implements OnInit {
    * @public
    */
   get ctaCards(): ICtaCards[] {
-    return CTA_CARDS_USERS_ADMIN
+    return CTA_CARDS_USERS_ADMIN;
   }
 
   constructor() {
@@ -111,7 +120,10 @@ export class AdminUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('this.userId', this.userId, this.flagUserEdit)
+    console.log('this.userId', this.userId, this.flagUserEdit);
+    if (this.flagUserEdit) {
+      this.getUserRegister();
+    }
   }
 
   /**
@@ -121,16 +133,15 @@ export class AdminUserComponent implements OnInit {
    */
   private buildForm() {
     this.formNewUser = this._fb.nonNullable.group({
-      nameUser: ['pepito', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      lastNameUser: ['rodriguez', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      tipoDoc: ['CC', [Validators.required]],
-      documentUser: ['123456789', [Validators.required, Validators.minLength(3), Validators.maxLength(13)]],
-      correoUser: ['pepito@gmail.com', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      phoneUser: ['123456789', [ Validators.minLength(3), Validators.maxLength(13)]],
-      roleUser: ['user', [Validators.required]],
+      nameUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+      lastNameUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+      tipoDoc: ['', [Validators.required]],
+      documentUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(13)]],
+      correoUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+      phoneUser: ['', [Validators.minLength(3), Validators.maxLength(13)]],
+      roleUser: ['', [Validators.required]],
     });
   }
-
 
   /**
    * Obtner los datos del formulario de creación o edicion del usuario
@@ -138,31 +149,98 @@ export class AdminUserComponent implements OnInit {
    */
   onSubmit(): void {
     if (this.formNewUser.valid && !this.flagUserEdit) {
-      console.log('this.formNewUser', this.formNewUser.value);
-      const user:IUser = this.builderUser(this.formNewUser.value);
-      this._auth.registerUser(user).subscribe({
-        next:(response)=>{
-          console.log(response);
+      this.registerUser();
+    } else if (this.formNewUser.valid && this.flagUserEdit && this.userId) {
+      const user: IUser = this.builderUser(this.formNewUser.value);
+      this._user.updateUser(user, Number(this.userId)).subscribe({
+        next: (response) => {
+          if (response.error) {
+            console.log('error');
+            this._snackBar.open(
+              'Hubo un error al guardar el usuario', 'Upss', {
+              duration: 3000,
+            });
+            return;
+          }
+          console.log(response.user);
+          this.getUserRegister();
+          this._snackBar.open(
+            'Usuario actualizado con exito', 'Listo!', {
+            duration: 3000,
+          });
         },
-        error:(error)=>{
+        error: (error) => {
           console.log(error);
-        }
-      })
+          this._snackBar.open(
+            error.error.message, 'Upss!', {
+            duration: 3000,
+          });
+        },
+      });
     }
-
   }
 
-  builderUser(formUser:any):IUser{
+  builderUser(formUser: any): IUser {
     return {
-      numid : formUser.documentUser,
-      tipoid : formUser.tipoDoc,
-      name : formUser.nameUser,
-      lastname : formUser.lastNameUser,
-      phone : formUser.phoneUser,
-      email : formUser.correoUser,
-      rol : formUser.roleUser
-    }
-
+      numid: formUser.documentUser,
+      tipoid: formUser.tipoDoc,
+      name: formUser.nameUser,
+      lastname: formUser.lastNameUser,
+      phone: formUser.phoneUser,
+      email: formUser.correoUser,
+      rol: formUser.roleUser,
+    };
   }
 
+  registerUser(): void {
+    console.log('this.formNewUser', this.formNewUser.value);
+    const user: IUser = this.builderUser(this.formNewUser.value);
+    this._auth.registerUser(user).subscribe({
+      next: (response) => {
+        if (response.error) {
+          console.log('error');
+          this._snackBar.open(
+            'Hubo un error interno', 'Upss', {
+            duration: 3000,
+          });
+          return;
+        }
+        console.log(response.user);
+        this._snackBar.open(
+          'Usuario registrado con exito', 'Listo!', {
+          duration: 3000,
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        this._snackBar.open(
+          error.error.message, 'Upss!', {
+          duration: 3000,
+        });
+      },
+    });
+  }
+
+  getUserRegister(): void {
+    console.log('this.userId -> getUserRegister', this.userId);
+    if (this.userId) {
+      this._user.getUser(Number(this.userId)).subscribe({
+        next: (response) => {
+          const user = response.user;
+          this.formNewUser.patchValue({
+            nameUser: user.name,
+            lastNameUser: user.lastname,
+            tipoDoc: user.tipoid,
+            documentUser: user.numid,
+            correoUser: user.email,
+            phoneUser: user.phone,
+            roleUser: user.rol,
+          });
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+    }
+  }
 }
