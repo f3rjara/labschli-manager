@@ -1,14 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { UserService } from '@services/users/users.service';
+
+import { IUser } from '@app/core/models/auth/user-register.model';
 import { CTA_CARDS_USERS_ADMIN } from '../../utils/cta-cards-users.constant';
 import { ICtaCards } from '@interfaces/cta-cards.interface';
+
 import { NavbarCardsCtaComponent } from '@organims/navbar-cards-cta/navbar-cards-cta.component';
-import { AuthService } from '@app/core/services/auth/auth.service';
-import { IUser } from '@app/core/models/auth/user-register.model';
-import { UserService } from '@services/users/users.service';
+import { UploadFileComponent } from '@organims/upload-file/upload-file.component';
 
 // ANGULAR MATERIAL MODULES
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,7 +35,7 @@ const MATERIAL_MODULES = [
 @Component({
   selector: 'app-admin-user',
   standalone: true,
-  imports: [CommonModule, NavbarCardsCtaComponent, ReactiveFormsModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, NavbarCardsCtaComponent, ReactiveFormsModule, UploadFileComponent, RouterModule, ...MATERIAL_MODULES],
   templateUrl: './admin-user.component.html',
   styleUrls: ['./admin-user.component.scss'],
 })
@@ -56,6 +59,13 @@ export class AdminUserComponent implements OnInit {
    * @private
    */
   private _route = inject(ActivatedRoute);
+
+  /**
+   * Variable que permite navegar entre rutas
+   * @property {ActivatedRoute} _routeNav
+   * @private
+   */
+  private _routeNav = inject(Router);
 
   /**
    * Variable que contiene los datos del usuario
@@ -151,32 +161,7 @@ export class AdminUserComponent implements OnInit {
     if (this.formNewUser.valid && !this.flagUserEdit) {
       this.registerUser();
     } else if (this.formNewUser.valid && this.flagUserEdit && this.userId) {
-      const user: IUser = this.builderUser(this.formNewUser.value);
-      this._user.updateUser(user, Number(this.userId)).subscribe({
-        next: (response) => {
-          if (response.error) {
-            console.log('error');
-            this._snackBar.open(
-              'Hubo un error al guardar el usuario', 'Upss', {
-              duration: 3000,
-            });
-            return;
-          }
-          console.log(response.user);
-          this.getUserRegister();
-          this._snackBar.open(
-            'Usuario actualizado con exito', 'Listo!', {
-            duration: 3000,
-          });
-        },
-        error: (error) => {
-          console.log(error);
-          this._snackBar.open(
-            error.error.message, 'Upss!', {
-            duration: 3000,
-          });
-        },
-      });
+      this.updateUser();
     }
   }
 
@@ -199,22 +184,20 @@ export class AdminUserComponent implements OnInit {
       next: (response) => {
         if (response.error) {
           console.log('error');
-          this._snackBar.open(
-            'Hubo un error interno', 'Upss', {
+          this._snackBar.open('Hubo un error al registrar el usuario', 'Upss', {
             duration: 3000,
           });
           return;
         }
         console.log(response.user);
-        this._snackBar.open(
-          'Usuario registrado con exito', 'Listo!', {
+        this._snackBar.open('Usuario registrado con exito', 'Listo!', {
           duration: 3000,
         });
+        this.formNewUser.reset();
       },
       error: (error) => {
         console.log(error);
-        this._snackBar.open(
-          error.error.message, 'Upss!', {
+        this._snackBar.open('Hubo un error interno', 'Upss!', {
           duration: 3000,
         });
       },
@@ -222,10 +205,16 @@ export class AdminUserComponent implements OnInit {
   }
 
   getUserRegister(): void {
-    console.log('this.userId -> getUserRegister', this.userId);
     if (this.userId) {
       this._user.getUser(Number(this.userId)).subscribe({
         next: (response) => {
+          if( response.error ) {
+            this.flagUserEdit = false;
+            this._snackBar.open('No se encontró el usuario', 'Upss!', {
+              duration: 3000,
+            });
+            this._routeNav.navigate(['/admin/usuarios/list']);
+          }
           const user = response.user;
           this.formNewUser.patchValue({
             nameUser: user.name,
@@ -239,8 +228,38 @@ export class AdminUserComponent implements OnInit {
         },
         error: (error) => {
           console.log(error);
+          this._snackBar.open('No se encontró el usuario', 'Upss!', {
+            duration: 3000,
+          });
+          this._routeNav.navigate(['/admin/usuarios/list']);
         },
       });
     }
+  }
+
+  updateUser(): void {
+    const user: IUser = this.builderUser(this.formNewUser.value);
+    this._user.updateUser(user, Number(this.userId)).subscribe({
+      next: (response) => {
+        if (response.error) {
+          console.log('error');
+          this._snackBar.open('Hubo un error al guardar el usuario', 'Upss', {
+            duration: 3000,
+          });
+          return;
+        }
+        console.log(response.user);
+        this.getUserRegister();
+        this._snackBar.open('Usuario actualizado con exito', 'Listo!', {
+          duration: 3000,
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        this._snackBar.open(error.error.message, 'Upss!', {
+          duration: 3000,
+        });
+      },
+    });
   }
 }
