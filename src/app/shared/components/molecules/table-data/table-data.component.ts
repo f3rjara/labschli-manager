@@ -7,10 +7,11 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { DATA_USER_MOCK } from './data.mock';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EmptyDataTableComponent } from '../../organims/empty-data-table/empty-data-table.component';
+import { UserService } from '@app/core/services/users/users.service';
+import { RouterLink } from '@angular/router';
 
 const MATERIAL_MODULES = [MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule];
 
@@ -24,33 +25,45 @@ export interface UserData {
 @Component({
   selector: 'app-table-data',
   standalone: true,
-  imports: [ CommonModule, EmptyDataTableComponent, ...MATERIAL_MODULES],
+  imports: [ CommonModule, EmptyDataTableComponent, RouterLink, ...MATERIAL_MODULES],
   templateUrl: './table-data.component.html',
   styleUrls: ['./table-data.component.scss']
 })
 export class TableDataComponent implements AfterViewInit, OnInit {
 
   private _cd = inject(ChangeDetectorRef);
+  private _users = inject(UserService);
 
   @Input() columnsTable: string[] = ['id', 'name', 'progress', 'fruit'];
-  @Input() dataTable: any[] = [];
+  @Input() dataTableShow!: any[];
 
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource<any>(this.dataTable);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this._users.getUserData().subscribe({
+      next:(response)=>{
+        console.log(response);
+        //this.dataSource = new MatTableDataSource<any>(response);
+        this.dataSource.data = response;
+
+      },
+      error:(error)=>{
+
+      }
+    });
+    console.log(this.dataTableShow);
     console.log(this.dataSource)
   }
 
   ngAfterViewInit() {
-    console.log(this.columnsTable, this.dataTable );
     this._cd.detectChanges();
+    console.log("after",this.columnsTable, this.dataTableShow );
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {
