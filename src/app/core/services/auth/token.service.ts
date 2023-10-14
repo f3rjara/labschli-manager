@@ -14,7 +14,7 @@ export class TokenService {
    * @returns {void}
    */
   saveToken(token: string) {
-    localStorage.setItem('token', token);
+    localStorage.setItem('labchsl_log', token);
   }
 
   /**
@@ -26,7 +26,7 @@ export class TokenService {
    * @returns {string} token
    */
   getToken(): string | null{
-    return localStorage.getItem('token') || null;
+    return localStorage.getItem('labchsl_log') || null;
   }
 
   /**
@@ -37,6 +37,6 @@ export class TokenService {
    * @returns {void}
    */
   clearToken() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('labchsl_log');
   }
 }

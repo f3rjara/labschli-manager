@@ -4,7 +4,7 @@
   </div>
 </ng-container>
 <ng-template #showTableComponent>
-  <section *ngIf="dataTableShow && dataTableShow.length > 0" class="my-20">
+  <section *ngIf="dataSource && dataSource.data.length > 0" class="my-20">
     <mat-form-field>
       <mat-label>Buscar coinicidencias por: </mat-label>
       <input matInput (keyup)="applyFilter($event)" #input />
@@ -41,7 +41,7 @@
     </div>
   </section>
 
-  <ng-container *ngIf="!dataTableShow || dataTableShow.length == 0">
+  <ng-container *ngIf="!dataSource || dataSource.data.length == 0">
     <app-empty-data-table [title]="emptyTitleTable"></app-empty-data-table>
   </ng-container>
 </ng-template>

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { IUser, IUserRegister, IUserRegisterReponse } from '@core/models/auth/user-register.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+
+import { IUser, IUserListResponse, IUserRegisterReponse } from '@core/models/auth/user-register.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class UserService {
    * */
   listUser() {
     const url = `${environment.API_URL}/user/list`;
-    return this._http.get<IUserRegister[]>(url);
+    return this._http.get<IUserListResponse>(url);
   }
 
   /**

@@ -20,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /** ANGULAR MATERIAL MODULES */
 
@@ -30,12 +31,20 @@ const MATERIAL_MODULES = [
   MatSelectModule,
   MatButtonModule,
   MatSnackBarModule,
+  MatCheckboxModule,
 ];
 
 @Component({
   selector: 'app-admin-user',
   standalone: true,
-  imports: [CommonModule, NavbarCardsCtaComponent, ReactiveFormsModule, UploadFileComponent, RouterModule, ...MATERIAL_MODULES],
+  imports: [
+    CommonModule,
+    NavbarCardsCtaComponent,
+    ReactiveFormsModule,
+    UploadFileComponent,
+    RouterModule,
+    ...MATERIAL_MODULES,
+  ],
   templateUrl: './admin-user.component.html',
   styleUrls: ['./admin-user.component.scss'],
 })
@@ -145,12 +154,14 @@ export class AdminUserComponent implements OnInit {
     this.formNewUser = this._fb.nonNullable.group({
       nameUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
       lastNameUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      tipoDoc: ['', [Validators.required]],
+      tipoDoc: ['CC', [Validators.required]],
       documentUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(13)]],
       correoUser: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
       phoneUser: ['', [Validators.minLength(3), Validators.maxLength(13)]],
-      roleUser: ['', [Validators.required]],
+      roleUser: ['user', [Validators.required]],
+      approveUpdate: [false, (this.flagUserEdit ? Validators.requiredTrue : null) ],
     });
+    console.log('esto es' , this.flagUserEdit  ,(this.flagUserEdit ? Validators.required : null));
   }
 
   /**
@@ -208,12 +219,13 @@ export class AdminUserComponent implements OnInit {
     if (this.userId) {
       this._user.getUser(Number(this.userId)).subscribe({
         next: (response) => {
-          if( response.error ) {
+          if (response.error) {
             this.flagUserEdit = false;
             this._snackBar.open('No se encontró el usuario', 'Upss!', {
               duration: 3000,
             });
             this._routeNav.navigate(['/admin/usuarios/list']);
+            return;
           }
           const user = response.user;
           this.formNewUser.patchValue({
@@ -224,7 +236,9 @@ export class AdminUserComponent implements OnInit {
             correoUser: user.email,
             phoneUser: user.phone,
             roleUser: user.rol,
+            approveUpdate: false
           });
+          this.formNewUser.get('approveUpdate')?.setErrors({ requiredTrue: true });
         },
         error: (error) => {
           console.log(error);
@@ -234,6 +248,7 @@ export class AdminUserComponent implements OnInit {
           this._routeNav.navigate(['/admin/usuarios/list']);
         },
       });
+      this.formNewUser.updateValueAndValidity();
     }
   }
 

@@ -96,6 +96,12 @@
         <mat-hint>Seleccione un tipo de documento valido</mat-hint>
       </mat-form-field>
 
+      <section appearance="fill" class="w-full mb-4" *ngIf="flagUserEdit">
+        <mat-checkbox class="example-margin" formControlName="approveUpdate" color="primary">
+          Apruebo la actualización del usuario
+        </mat-checkbox>
+      </section>
+
       <div class="w-full mt-4">
         <button mat-flat-button color="primary" class="w-full" [disabled]="formNewUser.invalid">Guardar Usuario</button>
       </div>
