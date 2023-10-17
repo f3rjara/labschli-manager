@@ -42,7 +42,17 @@
 </ng-container>
 
 <ng-template #actionShow let-row="row" let-column="column">
+  <a [href]="getRouterLink(row[column.columnDef])" target="_blank" *ngIf="column.columnDef == 'download'">
+    <button
+    mat-mini-fab
+    aria-label="Ver Usuario"
+    color="primary"
+    class="hover:bg-neutral-900 shadow-md">
+    <mat-icon class="text-emerald-50 hover:text-white w-auto h-auto">{{column.icon}}</mat-icon>
+  </button>
+  </a>
   <button
+    *ngIf="column.columnDef !== 'download'"
     mat-mini-fab
     aria-label="Ver Usuario"
     color="primary"

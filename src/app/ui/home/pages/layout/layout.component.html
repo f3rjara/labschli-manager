@@ -5,8 +5,8 @@
   <app-table-data
     *ngIf="showDocumentOfUser"
     [columnsTable]="columnsFilesUser"
-    [dataSource]="dataMockFilesUser"
-    [emptyTitleTable]="'No hay archivos asignados al usuario'">
+    [dataSource]="dataFilesUser"
+    [emptyTitleTable]="messageFileUser">
   </app-table-data>
 </section>
 

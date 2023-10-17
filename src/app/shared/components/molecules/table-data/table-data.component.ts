@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { environment } from 'src/environments/environment';
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -62,14 +63,22 @@ export class TableDataComponent implements OnInit {
 
   setDataSource(data: any) {
     this._dataSource = new MatTableDataSource<any>(data);
+    this._dataSource.paginator = this.paginator;
+    this._dataSource.sort = this.sort;
   }
 
   hasActionShow(columnDef: string): boolean {
     return this.actionShow.includes(columnDef);
   }
 
+  getRouterLink( linkFile: string) {
+    return `${environment.APP_STORAGE}${linkFile}`;
+  }
+
   ngOnInit(): void {
     this.displayedColumns = this.columnsTable.map((colum) => colum.columnDef);
+    this._dataSource.paginator = this.paginator;
+    this._dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {

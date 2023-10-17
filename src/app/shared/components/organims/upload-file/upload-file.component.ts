@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressFileComponent } from '../../molecules/progress-file/progress-file.component';
 import { DndDirective } from '@app/shared/directives/dnd.directive';
@@ -132,6 +132,9 @@ export class UploadFileComponent implements OnInit {
    * @memberof UploadFileComponent
    */
   private _userService = inject(UserService);
+
+  private _cdr = inject(ChangeDetectorRef);
+
 
   /**
    * Obtener los archivos aceptados para ser cargados
@@ -378,34 +381,44 @@ export class UploadFileComponent implements OnInit {
   }
 
   asignedFilesToUser(dataFiles: IDataFileAsigned[]) {
-    let responseMulti: any = [];
-    let responseError: any = [];
+    let responseMulti: string[] = [];
+
     dataFiles.forEach((dataFile) => {
+      let messageResponse = '';
       this._userService.asignedFileToUser(dataFile).subscribe({
         next: (response: IDataFileAsignedResponse) => {
-          console.log('***** response', response)
           if( response.error ) {
-            responseError.push([response.message, dataFile]);
-            this._snackBar.open(`Tenemos problemas al cargar el archivo ${dataFile.nameFile} , por favor intentelo más tarde`, 'Cerrar');
+            messageResponse = `Falló al cargar el archivo ${dataFile.nameFile} \n`;
+            responseMulti.push(messageResponse);
             return;
           }
-          responseMulti.push(response);
+          messageResponse = `El archivo ${dataFile.nameFile} fue cargado correctamente \n`;
+          responseMulti.push(messageResponse);
         },
         error: (error: Error) => {
-          console.log(error);
-          responseError.push([error, dataFile]);
-          this._snackBar.open(`Tenemos problemas al cargar el archivo ${dataFile.nameFile} , por favor intentelo más tarde`, 'Cerrar');
+          messageResponse = `Falló al cargar el archivo ${dataFile.nameFile} \n`;
+          responseMulti.push(messageResponse);
         },
         complete: () => {
-          this._snackBar.open('Los archivos fueron asignados correctamente', 'Cerrar');
           const fileNames = this.formUploadFile.get('fileNames') as FormArray;
           fileNames.clear();
           fileNames.controls = [];
           this.formUploadFile.reset();
           this.files = [];
+          this._cdr.detectChanges();
+
+          if(responseMulti.length == dataFiles.length ) {
+            const resulMessage = responseMulti.join('------------');
+            this._snackBar.open(resulMessage, 'Cerrar', {
+              duration: 18000,
+            });
+            return;
+          }
         }
       });
     });
+
+
 
   }
 }
