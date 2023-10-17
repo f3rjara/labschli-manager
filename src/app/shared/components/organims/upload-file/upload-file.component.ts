@@ -5,6 +5,10 @@ import { DndDirective } from '@app/shared/directives/dnd.directive';
 import { IconUploadComponent } from '../../atoms/icon-upload/icon-upload.component';
 import { IconFileComponent } from '../../atoms/icon-file/icon-file.component';
 import { IconDeleteComponent } from '../../atoms/icon-delete/icon-delete.component';
+import { TEXT_REGEX } from '@shared/helpers/const_pattern';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { IUserAuth } from '@app/core/models/auth/user.model';
+import { CustomFile, IDataFileAsigned, IDataFileAsignedResponse } from '@app/core/models/users/files.model';
 
 // ANGULAR MATERIAL MODULES
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,16 +17,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { TEXT_REGEX } from '@shared/helpers/const_pattern';
-import { of, take } from 'rxjs';
-import { AuthService } from '@app/core/services/auth/auth.service';
-import { IUserAuth } from '@app/core/models/auth/user.model';
+import { UserService } from '@app/core/services/users/users.service';
+
+
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, MatSnackBarModule];
 
-interface CustomFile extends File {
-  progress: number;
-}
 
 @Component({
   selector: 'app-upload-file',
@@ -117,7 +117,21 @@ export class UploadFileComponent implements OnInit {
    */
   private _snackBar = inject(MatSnackBar);
 
+  /**
+   * Inyectar el AuthService
+   * @type {AuthService}
+   * @private
+   * @memberof UploadFileComponent
+   */
   private _auth = inject(AuthService);
+
+  /**
+   * Inyectar el UserService
+   * @type {UserService}
+   * @private
+   * @memberof UploadFileComponent
+   */
+  private _userService = inject(UserService);
 
   /**
    * Obtener los archivos aceptados para ser cargados
@@ -343,19 +357,17 @@ export class UploadFileComponent implements OnInit {
     const customFiles = this.files;
 
     // Mapea los datos en el formato deseado
-    const mappedData = formValues.fileNames.map((control: any, index: number) => {
+    const mappedData: IDataFileAsigned[] = formValues.fileNames.map((control: any, index: number) => {
       const nameCurate = control.fileNameControl.trim();
       const customFile = customFiles[index];
-      const uid = 'uid-' + Date.now();
       return {
         nameFile: nameCurate,
-        uid,
         linkFile: customFile,
         idUser: Number(this.userEdit),
         idAdmin: this.profileAuthUser?.id,
       };
     });
-    console.log('Esto debe enviarse al servicio', mappedData);
+    this.asignedFilesToUser(mappedData);
   }
 
 
@@ -363,5 +375,34 @@ export class UploadFileComponent implements OnInit {
     this._auth.getAuthState$.subscribe((user) => {
       this.profileAuthUser = user;
     });
+  }
+
+  asignedFilesToUser(dataFiles: IDataFileAsigned[]) {
+    let responseMulti: any = [];
+    let responseError: any = [];
+    dataFiles.forEach((dataFile) => {
+      this._userService.asignedFileToUser(dataFile).subscribe({
+        next: (response: IDataFileAsignedResponse) => {
+          console.log('***** response', response)
+          if( response.error ) {
+            responseError.push([response.message, dataFile]);
+            this._snackBar.open(`Tenemos problemas al cargar el archivo ${dataFile.nameFile} , por favor intentelo más tarde`, 'Cerrar');
+            return;
+          }
+          responseMulti.push(response);
+        },
+        error: (error: Error) => {
+          console.log(error);
+          responseError.push([error, dataFile]);
+          this._snackBar.open(`Tenemos problemas al cargar el archivo ${dataFile.nameFile} , por favor intentelo más tarde`, 'Cerrar');
+        },
+        complete: () => {
+          this._snackBar.open('Los archivos fueron asignados correctamente', 'Cerrar');
+          this.formUploadFile.reset();
+          this.files = [];
+        }
+      });
+    });
+
   }
 }

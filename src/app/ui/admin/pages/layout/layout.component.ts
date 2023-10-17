@@ -48,12 +48,11 @@ export class LayoutComponent implements OnInit {
   constructor() {
     this._auth.getAuthState$.subscribe((user) => {
       this.profileAuthUser = user;
-      console.log(this.profileAuthUser);
     });
   }
 
   ngOnInit(): void {
-    this.uiService.drawerState$.pipe(take(1)).subscribe((state) => {
+    this.uiService.drawerState$.subscribe((state) => {
       this.drawer.toggle(state);
     });
   }

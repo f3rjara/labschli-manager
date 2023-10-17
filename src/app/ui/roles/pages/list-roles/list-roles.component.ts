@@ -57,7 +57,7 @@ export class ListRolesComponent implements OnInit, AfterViewInit {
         this.dataAdminUser = this.buildUserAdmninData(response.user);
       },
       error: (err) => {
-        console.log(err);
+        console.error(err);
         this.isLoadderShow = false;
       },
       complete: () => {

@@ -4,12 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 import { IUser, IUserListResponse, IUserRegisterReponse } from '@core/models/auth/user-register.model';
+import { IDataFileAsigned, IDataFileAsignedResponse } from '@app/core/models/users/files.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-
   /**
    * Permite listar los isiarios de tipo 'user' registrados en el sistema
    * @memberof AuthService
@@ -58,5 +58,22 @@ export class UserService {
   getUserAdmins() {
     const url = `${environment.API_URL}/user/list/admin`;
     return this._http.get<IUserListResponse>(url);
+  }
+
+  /**
+   * Asiigna un archivo a un usuario especifico
+   * @param dataFileAsigned
+   */
+  asignedFileToUser(dataFileAsigned: IDataFileAsigned): any {
+    const formData = new FormData();
+    formData.append('idAdmin',  dataFileAsigned.idAdmin);
+    formData.append('idUser',   dataFileAsigned.idUser);
+    formData.append('nameFile', dataFileAsigned.nameFile);
+    formData.append('linkFile', dataFileAsigned.linkFile);
+
+    const url = `${environment.API_URL}/files/create`;
+    return this._http.post<IDataFileAsignedResponse>(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   }
 }

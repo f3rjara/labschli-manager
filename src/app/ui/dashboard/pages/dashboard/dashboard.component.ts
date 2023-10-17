@@ -66,15 +66,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this._uiService.dataSystem().subscribe({
       next: (response) => {
-        console.log(response);
         this.systemData = response;
       },
       error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('complete');
-      },
+        console.error(err);
+      }
     });
   }
 }
