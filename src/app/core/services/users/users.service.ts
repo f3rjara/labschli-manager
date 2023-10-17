@@ -72,8 +72,6 @@ export class UserService {
     formData.append('linkFile', dataFileAsigned.linkFile);
 
     const url = `${environment.API_URL}/files/create`;
-    return this._http.post<IDataFileAsignedResponse>(url, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return this._http.post<IDataFileAsignedResponse>(url, formData);
   }
 }

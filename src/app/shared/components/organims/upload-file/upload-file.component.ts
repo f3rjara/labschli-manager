@@ -398,6 +398,9 @@ export class UploadFileComponent implements OnInit {
         },
         complete: () => {
           this._snackBar.open('Los archivos fueron asignados correctamente', 'Cerrar');
+          const fileNames = this.formUploadFile.get('fileNames') as FormArray;
+          fileNames.clear();
+          fileNames.controls = [];
           this.formUploadFile.reset();
           this.files = [];
         }
