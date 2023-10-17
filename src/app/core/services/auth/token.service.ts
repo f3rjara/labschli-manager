@@ -13,8 +13,9 @@ export class TokenService {
    * @public
    * @returns {void}
    */
-  saveToken(token: string) {
+  saveToken(token: string, expires_in: number) {
     localStorage.setItem('labchsl_log', token);
+    localStorage.setItem('labchsl_log_expires', String(expires_in));
   }
 
   /**
@@ -38,5 +39,6 @@ export class TokenService {
    */
   clearToken() {
     localStorage.removeItem('labchsl_log');
+    localStorage.removeItem('labchsl_log_expires');
   }
 }

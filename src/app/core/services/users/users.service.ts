@@ -9,16 +9,6 @@ import { IUser, IUserListResponse, IUserRegisterReponse } from '@core/models/aut
   providedIn: 'root',
 })
 export class UserService {
-  private userDataSubject = new BehaviorSubject<any>(null);
-
-  setUserData(data: any): void {
-    this.userDataSubject.next(data);
-  }
-
-  // Método para obtener los datos del usuario como un Observable para Table
-  getUserData(): Observable<any> {
-    return this.userDataSubject.asObservable();
-  }
 
   /**
    * Permite listar los isiarios de tipo 'user' registrados en el sistema
@@ -58,5 +48,15 @@ export class UserService {
   updateUser(user: IUser, idUser: number) {
     const url = `${environment.API_URL}/user/update/${idUser}`;
     return this._http.post<IUserRegisterReponse>(url, user);
+  }
+
+  /**
+   * Retorna la lista de usuarios de tipo 'admin' registrados en el sistema
+   * @returns {Observable<IUserListResponse>}
+   * @memberof AuthService
+   */
+  getUserAdmins() {
+    const url = `${environment.API_URL}/user/list/admin`;
+    return this._http.get<IUserListResponse>(url);
   }
 }

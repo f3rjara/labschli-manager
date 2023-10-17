@@ -55,7 +55,7 @@ const MATERIAL_MODULES = [
  */
 export class AdminUserComponent implements OnInit {
   /**
-   * Permite crear un formulario reactivo para el inicio de sesión.
+   * Inyección del servicio FormBuilder
    * @param {FormBuilder} fb
    * @memberof LoginComponent
    * @private
@@ -63,33 +63,37 @@ export class AdminUserComponent implements OnInit {
   private _fb = inject(FormBuilder);
 
   /**
-   * Variable que contiene los datos de la ruta activa
+   * Inyección del servicio ActivatedRoute
    * @property {ActivatedRoute} _route
    * @private
    */
   private _route = inject(ActivatedRoute);
 
   /**
-   * Variable que permite navegar entre rutas
+   * Inyección del servicio Router
    * @property {ActivatedRoute} _routeNav
    * @private
    */
   private _routeNav = inject(Router);
 
   /**
-   * Variable que contiene los datos del usuario
+   * Inyección del servicio AuthService
    * @property {AuthService} _auth
    * @private
    */
   private _auth = inject(AuthService);
 
   /**
-   * Variable que contiene los datos del usuario
+   * Inyección del servicio UserService
    * @property {UserService} _user
    * @private
    */
   private _user = inject(UserService);
 
+  /**
+   * Inyección del servicio para mostrar mensajes emergentes
+   * @property {MatSnackBar} _snackBar
+   */
   private _snackBar = inject(MatSnackBar);
 
   /**
@@ -139,7 +143,6 @@ export class AdminUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('this.userId', this.userId, this.flagUserEdit);
     if (this.flagUserEdit) {
       this.getUserRegister();
     }
@@ -161,7 +164,6 @@ export class AdminUserComponent implements OnInit {
       roleUser: ['user', [Validators.required]],
       approveUpdate: [false, (this.flagUserEdit ? Validators.requiredTrue : null) ],
     });
-    console.log('esto es' , this.flagUserEdit  ,(this.flagUserEdit ? Validators.required : null));
   }
 
   /**
@@ -189,25 +191,21 @@ export class AdminUserComponent implements OnInit {
   }
 
   registerUser(): void {
-    console.log('this.formNewUser', this.formNewUser.value);
     const user: IUser = this.builderUser(this.formNewUser.value);
     this._auth.registerUser(user).subscribe({
       next: (response) => {
         if (response.error) {
-          console.log('error');
           this._snackBar.open('Hubo un error al registrar el usuario', 'Upss', {
             duration: 3000,
           });
           return;
         }
-        console.log(response.user);
         this._snackBar.open('Usuario registrado con exito', 'Listo!', {
           duration: 3000,
         });
         this.formNewUser.reset();
       },
       error: (error) => {
-        console.log(error);
         this._snackBar.open('Hubo un error interno', 'Upss!', {
           duration: 3000,
         });
@@ -241,7 +239,7 @@ export class AdminUserComponent implements OnInit {
           this.formNewUser.get('approveUpdate')?.setErrors({ requiredTrue: true });
         },
         error: (error) => {
-          console.log(error);
+          console.error(error);
           this._snackBar.open('No se encontró el usuario', 'Upss!', {
             duration: 3000,
           });
@@ -257,20 +255,18 @@ export class AdminUserComponent implements OnInit {
     this._user.updateUser(user, Number(this.userId)).subscribe({
       next: (response) => {
         if (response.error) {
-          console.log('error');
           this._snackBar.open('Hubo un error al guardar el usuario', 'Upss', {
             duration: 3000,
           });
           return;
         }
-        console.log(response.user);
         this.getUserRegister();
         this._snackBar.open('Usuario actualizado con exito', 'Listo!', {
           duration: 3000,
         });
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
         this._snackBar.open(error.error.message, 'Upss!', {
           duration: 3000,
         });

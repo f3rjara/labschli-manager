@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay, switchMap, tap } from 'rxjs';
 import { TokenService } from './token.service';
-import { IUserAuth } from '@core/models/auth/user.model';
+import { IUserAuth, IUserAuthResponse } from '@core/models/auth/user.model';
 import { LoginResponse } from '@core/models/auth/login-response.model';
 import { environment } from 'src/environments/environment';
 import { IUser, IUserRegister } from '@core/models/auth/user-register.model';
@@ -34,8 +34,23 @@ export class AuthService {
    * @private
    * @readonly
    */
-  private _authState = new BehaviorSubject<IUserAuth | null>(null);
-  authState$ = this._authState.asObservable();
+  private _authState$ = new BehaviorSubject<IUserRegister | null >(null);
+  get getAuthState$(): Observable<IUserRegister | null> { return this._authState$; }
+  setAuthState$(user: IUserRegister | null) { this._authState$.next(user); }
+
+
+  constructor() {
+    this.getProfile().subscribe({
+      next: (response) => {
+        if(!response.userData) return this.setAuthState$(null);
+        this.setAuthState$(response.userData);
+      },
+      error: () => {
+        this.setAuthState$(null);
+        this.logout();
+      }
+    });
+  }
 
   /**
    * Permite iniciar sesión de un usuario.
@@ -46,22 +61,13 @@ export class AuthService {
   login(email: string, password: string) {
     const URL = `${environment.API_URL}/login`;
     return this._http.post<LoginResponse>(URL, {email, password})
-    .pipe(
-      tap(response => this._tokenService.saveToken(response.access_token)),
-      switchMap(_ => this.getProfile()),
-      tap(user => this._authState.next(user))
-    )
-  }
 
-  /**
-   * Establece el estado de la autenticación de un usuario.
-   * @param {IUserAuth | null} user
-   * @memberof AuthService
-   * @public
-   * @returns {void}
-   */
-  setAuthState(user: IUserAuth | null) {
-    this._authState.next(user);
+    .pipe(
+      tap(response => this._tokenService.saveToken(response.access_token, response.expires_in)),
+      switchMap(_ => this.getProfile()),
+      tap(response => this.setAuthState$(response.userData)),
+      shareReplay()
+    )
   }
 
   /**
@@ -71,10 +77,10 @@ export class AuthService {
    */
   getProfile() {
     const url = `${environment.API_URL}/user`;
-    return this._http.get<IUserAuth>(url);
+    return this._http.get<IUserAuthResponse>(url);
   }
 
- /**
+  /**
   * El usuario finaliza su sesión y elimina el token.
   * @memberof AuthService
   * @public
@@ -84,6 +90,11 @@ export class AuthService {
     this._tokenService.clearToken();
   }
 
+  /**
+   * Registra un usuario.
+   * @param user
+   * @returns
+   */
   registerUser(user:IUser){
     const url = `${environment.API_URL}/register`;
     return this._http.post<any>(url,user);

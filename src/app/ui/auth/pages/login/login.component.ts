@@ -131,11 +131,10 @@ export class LoginComponent {
     this._auth.login( email, password )
       .subscribe({
         next: (response) => {
-          console.log(response);
-          this._router.navigate(['/admin'])
+          
+          this._router.navigate(['/admin/dashboard'])
         },
         error: (error) => {
-          console.error(error.error.message)
           this.showSpinner = false;
           this.openSnackBar('El usuario o contraseña son invalidos', 'cerrar');
         },

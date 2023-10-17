@@ -34,7 +34,6 @@ export class FormSearchUserComponent {
   @Output()
   public submitted = new EventEmitter<{document:string}>();
 
-  showSpinner = false;
   formSearch!: FormGroup;
   private _fb = inject(FormBuilder)
 
@@ -48,15 +47,8 @@ export class FormSearchUserComponent {
   }
 
   onSubmit(){
-
-    this.showSpinner = true;
-    setTimeout(() => {
-      this.submitted.emit(this.formSearch.value);
-      this.showSpinner = false;
-    }, 2000);
-
-
-  }
+    this.submitted.emit(this.formSearch.value);
+   }
 
   buildForm(){
     this.formSearch = this._fb.nonNullable.group({

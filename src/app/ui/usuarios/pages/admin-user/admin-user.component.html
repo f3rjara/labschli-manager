@@ -89,7 +89,7 @@
 
       <mat-form-field appearance="fill" class="w-full mb-4">
         <mat-label>Seleccione el rol del usuario</mat-label>
-        <mat-select [(value)]="selectedRole" autocomplete="off" formControlName="roleUser">
+        <mat-select autocomplete="off" formControlName="roleUser">
           <mat-option value="user">Usuario</mat-option>
           <mat-option value="admin">Administrador</mat-option>
         </mat-select>
@@ -109,6 +109,6 @@
   </div>
 
   <div class="content">
-    <ng-container *ngIf="flagUserEdit"> <app-upload-file /> </ng-container>
+    <ng-container *ngIf="flagUserEdit" > <app-upload-file [userEdit]="userId" /> </ng-container>
   </div>
 </section>
