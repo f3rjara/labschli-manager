@@ -67,6 +67,7 @@ export class ListUsersComponent implements OnInit {
       columnDef: 'show',
       header: 'Mostrar',
       isLink: true,
+      icon: 'visibility '
     },
   ];
 

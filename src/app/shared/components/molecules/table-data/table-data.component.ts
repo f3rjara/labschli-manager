@@ -30,6 +30,7 @@ export interface Column {
   cell?: Function;
   isLink?: boolean;
   url?: string;
+  icon?: string;
 }
 
 @Component({

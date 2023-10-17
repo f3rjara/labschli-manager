@@ -44,7 +44,9 @@ export class LayoutComponent {
     },
     {
       columnDef: 'download',
-      header: 'Descargar'
+      header: 'Descargar',
+      isLink: true,
+      icon: 'download',
     }
   ];
 

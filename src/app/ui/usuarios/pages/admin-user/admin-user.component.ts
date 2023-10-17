@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AdminFilesUserComponent } from '@app/shared/components/templates/admin-files-user/admin-files-user.component';
 
 /** ANGULAR MATERIAL MODULES */
 
@@ -43,6 +44,7 @@ const MATERIAL_MODULES = [
     ReactiveFormsModule,
     UploadFileComponent,
     RouterModule,
+    AdminFilesUserComponent,
     ...MATERIAL_MODULES,
   ],
   templateUrl: './admin-user.component.html',

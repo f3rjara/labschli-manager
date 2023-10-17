@@ -43,7 +43,9 @@ export class ListRolesComponent implements OnInit, AfterViewInit {
     },
     {
       columnDef: 'show',
-      header: 'Ver'
+      header: 'Ver',
+      isLink: true,
+      icon: 'visibility'
     },
   ];
 

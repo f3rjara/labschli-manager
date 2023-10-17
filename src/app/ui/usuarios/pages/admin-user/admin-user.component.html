@@ -112,3 +112,8 @@
     <ng-container *ngIf="flagUserEdit" > <app-upload-file [userEdit]="userId" /> </ng-container>
   </div>
 </section>
+
+
+<section class="m-5 mb-10" *ngIf="flagUserEdit">
+  <app-admin-files-user />
+</section>
