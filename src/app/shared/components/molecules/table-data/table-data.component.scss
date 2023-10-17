@@ -1,5 +1,19 @@
 table {
-  width: 100%;
+  width: 90%;
+  box-shadow: none;
+
+  tr.mat-mdc-row:hover {
+    background-color: rgb(248 250 252) !important;
+  }
+
+  th, td {
+    width: min-content;
+  }
+
+  th.is-actionShow, td.is-actionShow {
+    width: 6% !important;
+  }
+
 }
 
 .mat-mdc-form-field {
@@ -11,17 +25,4 @@ td, th {
   width: 25%;
 }
 
-.example-button-container {
-  display: flex;
-  width: 80px;
-}
 
-tr.mat-mdc-row:hover {
-  background-color: rgb(248 250 252);
-}
-
-.show-mat-spinner {
-  display: grid;
-  place-content: center;
-  padding: 5em 0;
-}

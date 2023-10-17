@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    //canActivate: [authGuardFn],
+    canActivate: [authGuardFn],
     loadChildren: () => import('./ui/admin/admin.routes').then(admin => admin.routes),
   },
   {

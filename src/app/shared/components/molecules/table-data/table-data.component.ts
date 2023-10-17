@@ -1,7 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-/* Angular Material */
+import { EmptyDataTableComponent } from '@organims/empty-data-table/empty-data-table.component';
 
+/* Angular Material */
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -9,11 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { EmptyDataTableComponent } from '../../organims/empty-data-table/empty-data-table.component';
-import { UserService } from '@app/core/services/users/users.service';
-import { RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { delay } from 'rxjs';
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -26,6 +24,14 @@ const MATERIAL_MODULES = [
   MatProgressSpinnerModule,
 ];
 
+export interface Column {
+  columnDef: string;
+  header: string;
+  cell?: Function;
+  isLink?: boolean;
+  url?: string;
+}
+
 @Component({
   selector: 'app-table-data',
   standalone: true,
@@ -33,44 +39,43 @@ const MATERIAL_MODULES = [
   templateUrl: './table-data.component.html',
   styleUrls: ['./table-data.component.scss'],
 })
-export class TableDataComponent implements AfterViewInit, OnInit {
-  private _users = inject(UserService);
+export class TableDataComponent implements OnInit {
 
-  @Input() columnsTable: string[] = ['id', 'name', 'progress', 'fruit'];
-  @Input() dataTableShow!: any[];
+  isShowSpinner: boolean = true;
+
+  actionShow: string[] = ['show', 'edit', 'download', 'delete'];
+
   @Input() emptyTitleTable: string = 'No hay datos para mostrar';
+  @Input() columnsTable: Column[] = [];
+  @Input() set dataSource(data: any[]) {
+    this.setDataSource(data);
+  }
 
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  isShowTableComponent: boolean = false;
+  displayedColumns: Array<string> = [];
+  _dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngOnInit(): void {
-    this._users
-      .getUserData()
-      .pipe(delay(500))
-      .subscribe({
-        next: (response) => {
-          this.dataSource.data = response;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.isShowTableComponent = true;
-        },
-        error: (error) => {
-          console.error(error);
-          this.isShowTableComponent = true;
-        },
-      });
+  counterDataEmpty: number = 0;
+
+  setDataSource(data: any) {
+    this._dataSource = new MatTableDataSource<any>(data);
   }
 
-  ngAfterViewInit() { }
+  hasActionShow(columnDef: string): boolean {
+    return this.actionShow.includes(columnDef);
+  }
+
+  ngOnInit(): void {
+    this.displayedColumns = this.columnsTable.map((colum) => colum.columnDef);
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    this._dataSource.filter = filterValue.toLowerCase();
+    if (this._dataSource.paginator) {
+      this._dataSource.paginator.firstPage();
     }
   }
 }

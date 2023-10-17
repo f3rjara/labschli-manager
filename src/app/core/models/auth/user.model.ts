@@ -1,5 +1,7 @@
 // TODO: Create an interface for the user model of Back
 
+import { IUserRegister } from "./user-register.model";
+
 /**
  * Representa el modelo de datos de un usuario autenticado.
  *
@@ -34,4 +36,10 @@ export interface IUserAuth {
    * @memberof IUserAuth
    */
   email: string;
+}
+
+
+export interface IUserAuthResponse {
+  message: string;
+  userData: IUserRegister;
 }

@@ -26,3 +26,9 @@ export interface IUserRegisterReponse {
   error:  boolean;
   user:  IUserRegister;
 }
+
+
+export interface IUserListResponse {
+  error:  boolean;
+  user:  IUserRegister[];
+}
