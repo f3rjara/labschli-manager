@@ -74,4 +74,6 @@ export class UserService {
     const url = `${environment.API_URL}/files/create`;
     return this._http.post<IDataFileAsignedResponse>(url, formData);
   }
+
+
 }

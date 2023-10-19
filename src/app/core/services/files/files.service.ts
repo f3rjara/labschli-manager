@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { IFilesUserResponse } from '@app/core/models/users/files.model';
+import { IDataFileDeleteResponse, IFilesUserResponse } from '@app/core/models/users/files.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -20,4 +20,14 @@ export class FilesService {
     const URL = `${environment.API_URL}/user/${UserDocument}/files`;
     return this._http.get<IFilesUserResponse>(URL)
   }
+
+  /**
+   * Elimina un archivo a un usuario
+   * @param idFile
+   */
+  removeFileToUser(idFile: number) {
+    const url = `${environment.API_URL}/files/delete/${idFile}`;
+    return this._http.delete<IDataFileDeleteResponse>(url);
+  }
+
 }

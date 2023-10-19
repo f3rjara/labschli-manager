@@ -16,7 +16,8 @@
             {{ column.header }}
           </th>
           <td mat-cell *matCellDef="let row" [ngClass]="{ 'is-actionShow': hasActionShow(column.columnDef) }">
-            <ng-container *ngIf="column.isLink"
+            <ng-container
+              *ngIf="column.isLink"
               [ngTemplateOutlet]="actionShow"
               [ngTemplateOutletContext]="{ row: row, column: column }">
             </ng-container>
@@ -42,7 +43,7 @@
 </ng-container>
 
 <ng-template #actionShow let-row="row" let-column="column">
-  <a [href]="getRouterLink(row[column.columnDef])" target="_blank" *ngIf="column.columnDef == 'download'">
+  <!-- <a [href]="getRouterLink(row[column.columnDef])" target="_blank" *ngIf="column.columnDef == 'download'">
     <button
     mat-mini-fab
     aria-label="Ver Usuario"
@@ -50,14 +51,15 @@
     class="hover:bg-neutral-900 shadow-md">
     <mat-icon class="text-emerald-50 hover:text-white w-auto h-auto">{{column.icon}}</mat-icon>
   </button>
-  </a>
+  </a> -->
   <button
-    *ngIf="column.columnDef !== 'download'"
+    (click)="eventActionShow($event, column, row)"
     mat-mini-fab
     aria-label="Ver Usuario"
     color="primary"
-    class="hover:bg-neutral-900 shadow-md"
-    [routerLink]="row[column.columnDef]">
-    <mat-icon class="text-emerald-50 hover:text-white w-auto h-auto">{{column.icon}}</mat-icon>
+    class="hover:bg-neutral-900 shadow-md">
+    <mat-icon class="text-emerald-50 hover:text-white w-auto h-auto">{{ column.icon }}</mat-icon>
   </button>
 </ng-template>
+
+

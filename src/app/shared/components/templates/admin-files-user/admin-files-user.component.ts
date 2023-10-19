@@ -81,7 +81,7 @@ export class AdminFilesUserComponent implements OnInit {
         size: this.formatBytes(file.sizeFile, 2),
         created_at: this._datePipe.transform(file.created_at, 'dd - MMMM - yyyy'),
         adminMail: file.adminMail,
-        delete: `delete/${file.id}`
+        delete: file.id
       }
     });
   }

@@ -15,6 +15,11 @@ export interface IDataFileAsignedResponse {
   message: string;
 }
 
+export interface IDataFileDeleteResponse {
+  error: boolean;
+  message: string;
+}
+
 /**
  * Respuesta del servicio para obtener los archivos de un usuario
  * */
