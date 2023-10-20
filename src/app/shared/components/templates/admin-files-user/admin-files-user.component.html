@@ -1,5 +1,8 @@
 <app-table-data
   [columnsTable]="columnsFilesUser"
   [dataSource]="dataFilesUser"
-  [emptyTitleTable]="'No hay archivos asignados al usuario'">
+  [emptyTitleTable]="'No hay archivos asignados al usuario'"
+  (eventActionSelect)="eventActionSelect($event)">
 </app-table-data>
+
+<app-loadder *ngIf="isLoadderShow" />

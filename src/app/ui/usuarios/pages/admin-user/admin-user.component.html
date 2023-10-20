@@ -109,11 +109,14 @@
   </div>
 
   <div class="content">
-    <ng-container *ngIf="flagUserEdit" > <app-upload-file [userEdit]="userId" /> </ng-container>
+    <ng-container *ngIf="flagUserEdit">
+      <app-upload-file [userEdit]="userId" (uploadeEvent)="uploaderEvent($event)" />
+    </ng-container>
   </div>
 </section>
 
-
 <section class="m-5 mb-10" *ngIf="flagUserEdit">
-  <app-admin-files-user [userId]="userId" />
+  <app-admin-files-user [userId]="userId" [uploaderEvent]="counterFilesEvent" />
 </section>
+
+

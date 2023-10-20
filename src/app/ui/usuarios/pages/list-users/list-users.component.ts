@@ -11,6 +11,8 @@ import { ICtaCards } from '@interfaces/cta-cards.interface';
 import { UserService } from '@services/users/users.service';
 import { take } from 'rxjs';
 import { LoadderComponent } from '@molecules/loadder/loadder.component';
+import { IActionEvent } from '@app/shared/interfaces/event-action.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-users',
@@ -26,6 +28,13 @@ export class ListUsersComponent implements OnInit {
    * @private
    */
   private _users = inject(UserService);
+
+  /**
+   * Inyecta el router para poder navegar entre las rutas
+   * @memberof ListUsersComponent
+   * @private
+   */
+  private _router = inject(Router);
 
   /**
    * Permite mostrar el loadder mientras se obtienen los datos de los usuarios
@@ -112,5 +121,17 @@ export class ListUsersComponent implements OnInit {
         show: `/admin/usuarios/editar/${user.id}`,
       };
     });
+  }
+
+  /**
+   * Permite realizar una acción cuando se selecciona una acción en la tabla
+   * @param objectEmited
+   * @memberof ListUsersComponent
+   */
+  eventActionSelect( objectEmited: IActionEvent ) {
+    const { action, row, column } = objectEmited;
+    if( action === 'show' && action === column.columnDef ) {
+      this._router.navigate([row[action]]);
+    }
   }
 }

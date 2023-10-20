@@ -1,38 +1,28 @@
-<app-tolbar-top [titleToolbar]="titleToolbar"></app-tolbar-top>
+<app-tolbar-top [titleToolbar]="titleToolbar" />
 
-<app-navbar-cards-cta [title]="'Que deseas hacer hoy?'" [ctaCards]="ctaCards"></app-navbar-cards-cta>
+<app-navbar-cards-cta [title]="'Que deseas hacer hoy?'" [ctaCards]="ctaCards" />
 
 <section class="m-5 my-10">
-  <!-- subscriptions -->
-  <div
-    class="flex gap-4 justify-center items-center mt-10 w-full bg-[#eeeeee] rounded-xl h-full py-9 pb-20">
+  <div class="flex flex-wrap gap-10 justify-center items-center mt-10 w-full bg-[#eeeeee] rounded-xl h-full py-9 pb-20">
+    <!--Número de Ususarios-->
 
-      <!--Número de Ususarios-->
-      <div class="flex flex-col py-8 px-0 min-w-[300px] rounded-xl bg-white shadow-xl translate-x-4 translate-y-4 w-96 md:w-auto">
-        <div><app-icon-users /></div>
-        <h2 class="mt-5 mb-0 leading-[100%] font-semibold text-center text-[4em]"> {{ systemData.userCount }} </h2>
-        <p class="text-sm w-60 md:w-auto text-center">Usuarios registrados</p>
-      </div>
+    <app-card-dashboard [title]="'Usuarios registrados'" [count]="systemData.userCount">
+      <ng-container icon> <app-icon-users /></ng-container>
+    </app-card-dashboard>
 
-      <!--Número de Administradores-->
-      <div class="flex flex-col py-8 px-0 min-w-[300px] rounded-xl bg-white shadow-xl translate-x-4 translate-y-4 w-96 md:w-auto">
-        <div><app-icon-admins /></div>
-        <h2 class="mt-5 mb-0 leading-[100%] font-semibold text-center text-[4em]">{{ systemData.adminCount }}</h2>
-        <p class="text-sm w-60 md:w-auto text-center">Administradores registrados</p>
-      </div>
+    <!--Número de Administradores-->
+    <app-card-dashboard [title]="'Administradores registrados'" [count]="systemData.adminCount">
+      <ng-container icon> <app-icon-admins /></ng-container>
+    </app-card-dashboard>
 
-      <!--Número de Administradores-->
-      <div class="flex flex-col py-8 px-0 min-w-[300px] rounded-xl bg-white shadow-xl translate-x-4 translate-y-4 w-96 md:w-auto">
-        <div><app-icon-files /></div>
-        <h2 class="mt-5 mb-0 leading-[100%] font-semibold text-center text-[4em]">{{ systemData.fileCount }}</h2>
-        <p class="text-sm w-60 md:w-auto text-center">Archivos cargados</p>
-      </div>
+    <!--Número de Administradores-->
+    <app-card-dashboard [title]="'Archivos cargados'" [count]="systemData.fileCount">
+      <ng-container icon> <app-icon-files /></ng-container>
+    </app-card-dashboard>
 
-      <!--Número de Administradores-->
-      <div class="flex flex-col py-8 px-0 min-w-[300px] rounded-xl bg-white shadow-xl translate-x-4 translate-y-4 w-96 md:w-auto">
-        <div><app-icon-uploads /></div>
-        <h2 class="mt-5 mb-0 leading-[100%] font-semibold text-center text-[4em]">{{ systemData.totalSize }}</h2>
-        <p class="text-sm w-60 md:w-auto text-center">Espacio ocupado</p>
-      </div>
+    <!--Número de Administradores-->
+    <app-card-dashboard [title]="'Espacio ocupado'" [count]="systemData.totalSize">
+      <ng-container icon> <app-icon-uploads /></ng-container>
+    </app-card-dashboard>
   </div>
 </section>

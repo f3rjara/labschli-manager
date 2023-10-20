@@ -8,7 +8,8 @@
 <app-table-data
   [columnsTable]="columnsAdminUsers"
   [dataSource]="dataAdminUser"
-  [emptyTitleTable]="'No hay administradores por Mostrar'">
+  [emptyTitleTable]="'No hay administradores por Mostrar'"
+  (eventActionSelect)="eventActionSelect($event)">
 </app-table-data>
 
 <app-loadder *ngIf="isLoadderShow"></app-loadder>

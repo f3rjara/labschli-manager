@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { RolesComponent } from './pages/roles/roles.component';
 import { ListRolesComponent } from './pages/list-roles/list-roles.component';
+import { authGuardFn } from '@app/core/guards/auth-fn.guard';
 
 export const routes: Routes = [
   {
@@ -14,7 +15,8 @@ export const routes: Routes = [
       },
       {
         path: 'list',
-        component: ListRolesComponent
+        component: ListRolesComponent,
+        canActivate: [authGuardFn],
       },
     ]
   },
