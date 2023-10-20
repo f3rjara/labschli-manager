@@ -11,6 +11,7 @@ import { IconUsersComponent } from '@atoms/icon-users/icon-users.component';
 import { IconFilesComponent } from '@app/shared/components/atoms/icon-files/icon-files.component';
 import { IconAdminsComponent } from '@app/shared/components/atoms/icon-admins/icon-admins.component';
 import { IconUploadsComponent } from '@app/shared/components/atoms/icon-uploads/icon-uploads.component';
+import { CardDashboardComponent } from '@app/shared/components/molecules/card-dashboard/card-dashboard.component';
 
 /** ANGULAR MODULES */
 
@@ -26,7 +27,8 @@ const MATERIAL_MODULES = [];
     IconUsersComponent,
     IconFilesComponent,
     IconAdminsComponent,
-    IconUploadsComponent
+    IconUploadsComponent,
+    CardDashboardComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

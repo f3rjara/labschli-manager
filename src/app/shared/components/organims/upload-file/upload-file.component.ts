@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressFileComponent } from '../../molecules/progress-file/progress-file.component';
 import { DndDirective } from '@app/shared/directives/dnd.directive';
@@ -18,6 +18,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from '@app/core/services/users/users.service';
+import { LoadderComponent } from '../../molecules/loadder/loadder.component';
 
 
 
@@ -35,6 +36,7 @@ const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatIconModule, Mat
     IconUploadComponent,
     IconFileComponent,
     IconDeleteComponent,
+    LoadderComponent,
     ...MATERIAL_MODULES,
   ],
   templateUrl: './upload-file.component.html',
@@ -47,6 +49,11 @@ export class UploadFileComponent implements OnInit {
    * @memberof UploadFileComponent
    */
   @Input() userEdit!: string | null;
+
+  @Output() uploadeEvent: EventEmitter<number> = new EventEmitter<number>();
+
+
+  isLoadderShow: boolean = false;
 
   /**
    * Archivos cargados por el usuario
@@ -382,22 +389,25 @@ export class UploadFileComponent implements OnInit {
 
   asignedFilesToUser(dataFiles: IDataFileAsigned[]) {
     let responseMulti: string[] = [];
-
+    this.isLoadderShow = true;
     dataFiles.forEach((dataFile) => {
       let messageResponse = '';
       this._userService.asignedFileToUser(dataFile).subscribe({
         next: (response: IDataFileAsignedResponse) => {
           if( response.error ) {
+            this.isLoadderShow = false;
             messageResponse = `Falló al cargar el archivo ${dataFile.nameFile} \n`;
             responseMulti.push(messageResponse);
             return;
           }
+          this.isLoadderShow = false;
           messageResponse = `El archivo ${dataFile.nameFile} fue cargado correctamente \n`;
           responseMulti.push(messageResponse);
         },
         error: (error: Error) => {
           messageResponse = `Falló al cargar el archivo ${dataFile.nameFile} \n`;
           responseMulti.push(messageResponse);
+          this.isLoadderShow = false;
         },
         complete: () => {
           const fileNames = this.formUploadFile.get('fileNames') as FormArray;
@@ -408,17 +418,16 @@ export class UploadFileComponent implements OnInit {
           this._cdr.detectChanges();
 
           if(responseMulti.length == dataFiles.length ) {
-            const resulMessage = responseMulti.join('------------');
+            const resulMessage = responseMulti.join(' ------------ ');
             this._snackBar.open(resulMessage, 'Cerrar', {
-              duration: 18000,
+              duration: 8000,
             });
+            this.uploadeEvent.emit(dataFiles.length);
             return;
           }
+          this.isLoadderShow = false;
         }
       });
     });
-
-
-
   }
 }

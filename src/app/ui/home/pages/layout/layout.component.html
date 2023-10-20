@@ -6,7 +6,8 @@
     *ngIf="showDocumentOfUser"
     [columnsTable]="columnsFilesUser"
     [dataSource]="dataFilesUser"
-    [emptyTitleTable]="messageFileUser">
+    [emptyTitleTable]="messageFileUser"
+    (eventActionSelect)="eventActionSelect($event)">
   </app-table-data>
 </section>
 

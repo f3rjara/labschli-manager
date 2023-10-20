@@ -46,8 +46,14 @@ export class LayoutComponent implements OnInit {
   );
 
   constructor() {
-    this._auth.getAuthState$.subscribe((user) => {
-      this.profileAuthUser = user;
+    this._auth.getAuthState$.subscribe({
+      next: (user) => {
+        this.profileAuthUser = user;
+        console.log(user);
+      },
+      error: (err) => {
+        this.logout();
+      }
     });
   }
 

@@ -3,11 +3,17 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Column, TableDataComponent } from '../../molecules/table-data/table-data.component';
 import { FilesService } from '@app/core/services/files/files.service';
 import { IFiles } from '@app/core/models/users/files.model';
+import { formatBytes } from '@app/shared/helpers/format-bytes.helper';
+import { IActionEvent } from '@app/shared/interfaces/event-action.interface';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from '../../molecules/dialog-delete/dialog.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { LoadderComponent } from '../../molecules/loadder/loadder.component';
 
 @Component({
   selector: 'app-admin-files-user',
   standalone: true,
-  imports: [CommonModule, TableDataComponent],
+  imports: [CommonModule, TableDataComponent, MatDialogModule, MatSnackBarModule, LoadderComponent],
   providers: [DatePipe],
   templateUrl: './admin-files-user.component.html',
   styleUrls: ['./admin-files-user.component.scss']
@@ -16,9 +22,22 @@ export class AdminFilesUserComponent implements OnInit {
 
   @Input() userId: string | null = null;
 
+  @Input() set uploaderEvent( counter: number ) {
+    this._counterFilesAdd += counter;
+    this.getFilesUser();
+  }
+
+  isLoadderShow: boolean = false;
+
+  private _counterFilesAdd: number = 0;
+
+  private _dialog = inject(MatDialog);
+
   private _filesService = inject(FilesService);
 
   private _datePipe = inject(DatePipe);
+
+  private _snackBar = inject(MatSnackBar);
 
   columnsFilesUser: Column[] = [
     {
@@ -56,6 +75,10 @@ export class AdminFilesUserComponent implements OnInit {
   dataFilesUser: any[] = [];
 
   ngOnInit(): void {
+    this.getFilesUser();
+  }
+
+  getFilesUser() {
     if(this.userId) {
       this._filesService.getFilesAdminUser(this.userId).subscribe({
         next: (response) => {
@@ -78,7 +101,7 @@ export class AdminFilesUserComponent implements OnInit {
         id: file.id,
         name: file.nameFile,
         extention: file.extFile.toUpperCase(),
-        size: this.formatBytes(file.sizeFile, 2),
+        size: formatBytes(file.sizeFile, 2),
         created_at: this._datePipe.transform(file.created_at, 'dd - MMMM - yyyy'),
         adminMail: file.adminMail,
         delete: file.id
@@ -86,21 +109,53 @@ export class AdminFilesUserComponent implements OnInit {
     });
   }
 
-
-
-  /**
-   * format bytes
-   * @param bytes (File size in bytes)
-   * @param decimals (Decimals point)
-   */
-  formatBytes(bytes = 0, decimals = 2) {
-    if (bytes === 0) {
-      return '0 Bytes';
-    }
-    const k = 1024;
-    const dm = decimals <= 0 ? 0 : decimals || 2;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  eventActionSelect(objectEmited: IActionEvent) {
+    const { action, row, column  } = objectEmited;
+    let dialogoRef = this._dialog.open( DialogComponent, {
+      width: '250px',
+      data: {
+        title: "Eliminar Archivo",
+        message: "Esta seguro en eliminar el archivo?"
+      }
+    });
+    dialogoRef.afterClosed().subscribe(dialogResult => {
+      if(action == 'delete' && action == column.columnDef && dialogResult ) {
+        this.deleteFile(row[action])
+      }
+   });
   }
+
+  deleteFile( idFile: number = 0) {
+    if (idFile == 0) {return; }
+    this.isLoadderShow = true;
+    this._filesService.removeFileToUser(idFile).subscribe({
+      next: (response) => {
+        if (response.error) {
+          this._snackBar.open('Hubo un problema al eliminar el archivo', 'cerrar', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+          this.isLoadderShow = false;
+          return;
+        }
+        this._snackBar.open('El archivo se eliminó con éxito', 'cerrar', {
+          duration: 8000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+        this.getFilesUser();
+        this.isLoadderShow = false;
+      },
+      error: (error) => {
+        console.error(error);
+        this.isLoadderShow = false;
+      },
+      complete:() => {
+        this.isLoadderShow = false;
+      }
+    });
+
+  }
+
 }

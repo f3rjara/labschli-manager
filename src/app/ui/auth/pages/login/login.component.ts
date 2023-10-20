@@ -131,7 +131,6 @@ export class LoginComponent {
     this._auth.login( email, password )
       .subscribe({
         next: (response) => {
-
           this._router.navigate(['/admin/dashboard'])
         },
         error: (error) => {

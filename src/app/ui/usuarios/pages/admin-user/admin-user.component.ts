@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -128,6 +128,11 @@ export class AdminUserComponent implements OnInit {
    * @default 'option2'
    */
   selectedRole = 'user';
+
+  /**
+   * Contador de archivos agregados
+   */
+  counterFilesEvent: number = 0;
 
   /**
    * Variable que contiene los datos de los botones de acción
@@ -274,5 +279,9 @@ export class AdminUserComponent implements OnInit {
         });
       },
     });
+  }
+
+  uploaderEvent( countFiles: any ): void {
+    this.counterFilesEvent = countFiles;
   }
 }

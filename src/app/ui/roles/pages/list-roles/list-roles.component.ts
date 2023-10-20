@@ -5,6 +5,8 @@ import { Column, TableDataComponent } from '@molecules/table-data/table-data.com
 import { LoadderComponent } from '@molecules/loadder/loadder.component';
 import { UserService } from '@app/core/services/users/users.service';
 import { IUserRegister } from '@app/core/models/auth/user-register.model';
+import { IActionEvent } from '@app/shared/interfaces/event-action.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-roles',
@@ -50,7 +52,10 @@ export class ListRolesComponent implements OnInit, AfterViewInit {
   ];
 
   dataAdminUser: any[] = [];
+
   private _userAdminService = inject(UserService);
+
+  private _router = inject(Router);
 
   ngOnInit(): void {
     this._userAdminService.getUserAdmins().subscribe({
@@ -82,5 +87,17 @@ export class ListRolesComponent implements OnInit, AfterViewInit {
         'show': `/admin/usuarios/editar/${id}`
       }
     });
+  }
+
+  /**
+   * Permite realizar una acción cuando se selecciona una acción en la tabla
+   * @param objectEmited
+   * @memberof ListUsersComponent
+   */
+  eventActionSelect( objectEmited: IActionEvent ) {
+    const { action, row, column } = objectEmited;
+    if( action === 'show' && action === column.columnDef ) {
+      this._router.navigate([row[action]]);
+    }
   }
 }
