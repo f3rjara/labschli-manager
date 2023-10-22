@@ -61,8 +61,27 @@ export class AuthService {
   login(email: string, password: string) {
     const URL = `${environment.API_URL}/login`;
     return this._http.post<LoginResponse>(URL, {email, password})
-
     .pipe(
+      tap(response => this._tokenService.saveToken(response.access_token, response.expires_in)),
+      switchMap(_ => this.getProfile()),
+      tap(response => this.setAuthState$(response.userData)),
+      shareReplay()
+    )
+  }
+
+  /**
+  * El usuario finaliza su sesión y elimina el token.
+  * @memberof AuthService
+  * @public
+  * @returns {void}
+  */
+  logout() {
+    this._tokenService.clearToken();
+  }
+
+  refreshSesion() {
+    const URL = `${environment.API_URL}/refresh`;
+    return this._http.post<LoginResponse>(URL, null ).pipe(
       tap(response => this._tokenService.saveToken(response.access_token, response.expires_in)),
       switchMap(_ => this.getProfile()),
       tap(response => this.setAuthState$(response.userData)),
@@ -81,16 +100,6 @@ export class AuthService {
   }
 
   /**
-  * El usuario finaliza su sesión y elimina el token.
-  * @memberof AuthService
-  * @public
-  * @returns {void}
-  */
-  logout() {
-    this._tokenService.clearToken();
-  }
-
-  /**
    * Registra un usuario.
    * @param user
    * @returns
@@ -100,3 +109,4 @@ export class AuthService {
     return this._http.post<any>(url,user);
   }
 }
+

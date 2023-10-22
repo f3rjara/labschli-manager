@@ -107,8 +107,8 @@ export class LoginComponent {
    */
   private buildForm() {
     this.form = this._fb.nonNullable.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: ['admin@labchsl.com', [Validators.required, Validators.email]],
+      password: ['Usuario_123', [Validators.required, Validators.minLength(6)]],
     });
   }
 

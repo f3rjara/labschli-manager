@@ -2,11 +2,12 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ApplicationConfig } from '@angular/platform-browser';
-import { TokenInterceptor } from './core/interceptors/auth/token.interceptor';
 import { LOCALE_ID } from '@angular/core';
 import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 import { routes } from './app.routes';
+import { CookieService } from 'ngx-cookie-service';
+import { TokenInterceptor } from './core/interceptors/auth/token.interceptor';
 
 registerLocaleData(es);
 
@@ -19,6 +20,7 @@ export const AppConfig: ApplicationConfig = {
       multi: true
     },
     { provide: LOCALE_ID, useValue: 'es-CO' },
+    [CookieService],
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
   ],
