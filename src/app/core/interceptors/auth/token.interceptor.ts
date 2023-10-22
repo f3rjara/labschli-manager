@@ -1,9 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenService } from '@services/auth/token.service';
 import { CookieService } from 'ngx-cookie-service';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
