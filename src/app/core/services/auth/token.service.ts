@@ -1,6 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '@app/shared/components/molecules/dialog-delete/dialog.component';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 
