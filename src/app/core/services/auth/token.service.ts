@@ -1,9 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '@app/shared/components/molecules/dialog-delete/dialog.component';
+import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
+
+  private _cookieService = inject(CookieService);
+
+  // beharioSunject para controlar el estado del refresh token
+  private _refreshToken$ = new BehaviorSubject<boolean>(false);
+  get refreshToken$() { return this._refreshToken$.asObservable(); }
+  setRefreshToken(value: boolean) { this._refreshToken$.next(value); }
 
   /**
    * Permite guardar el token en el local storage.
@@ -14,8 +25,11 @@ export class TokenService {
    * @returns {void}
    */
   saveToken(token: string, expires_in: number) {
-    localStorage.setItem('labchsl_log', token);
-    localStorage.setItem('labchsl_log_expires', String(expires_in));
+    const encodedToken = btoa(token);
+    const expire = new Date();
+    expire.setTime(expire.getTime() + expires_in * 1000);
+    this._cookieService.set('labchsl_log', encodedToken, expire, '/');
+    this._cookieService.set('labchsl_expired_in', expire.toString(), expire, '/');
   }
 
   /**
@@ -26,8 +40,15 @@ export class TokenService {
    * @public
    * @returns {string} token
    */
-  getToken(): string | null{
-    return localStorage.getItem('labchsl_log') || null;
+  getToken(): string | null {
+    const encodedToken = this._cookieService.get('labchsl_log');
+    if (!encodedToken) return null;
+    try {
+      const decodedToken = atob(encodedToken);
+      return decodedToken;
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
@@ -38,7 +59,12 @@ export class TokenService {
    * @returns {void}
    */
   clearToken() {
-    localStorage.removeItem('labchsl_log');
-    localStorage.removeItem('labchsl_log_expires');
+    this._cookieService.delete('labchsl_log', '/');
+    this._cookieService.delete('labchsl_expired_in', '/');
+  }
+
+
+  sesionUserIsRefresh(){
+    this.setRefreshToken(true);
   }
 }

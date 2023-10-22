@@ -16,13 +16,12 @@ import { LoadderComponent } from '../../molecules/loadder/loadder.component';
   imports: [CommonModule, TableDataComponent, MatDialogModule, MatSnackBarModule, LoadderComponent],
   providers: [DatePipe],
   templateUrl: './admin-files-user.component.html',
-  styleUrls: ['./admin-files-user.component.scss']
+  styleUrls: ['./admin-files-user.component.scss'],
 })
 export class AdminFilesUserComponent implements OnInit {
-
   @Input() userId: string | null = null;
 
-  @Input() set uploaderEvent( counter: number ) {
+  @Input() set uploaderEvent(counter: number) {
     this._counterFilesAdd += counter;
     this.getFilesUser();
   }
@@ -42,11 +41,11 @@ export class AdminFilesUserComponent implements OnInit {
   columnsFilesUser: Column[] = [
     {
       columnDef: 'id',
-      header: '#'
+      header: '#',
     },
     {
       columnDef: 'name',
-      header: 'Nombre de archivo'
+      header: 'Nombre de archivo',
     },
     {
       columnDef: 'extention',
@@ -69,7 +68,7 @@ export class AdminFilesUserComponent implements OnInit {
       header: 'Eliminar',
       isLink: true,
       icon: 'delete',
-    }
+    },
   ];
 
   dataFilesUser: any[] = [];
@@ -79,10 +78,10 @@ export class AdminFilesUserComponent implements OnInit {
   }
 
   getFilesUser() {
-    if(this.userId) {
+    if (this.userId) {
       this._filesService.getFilesAdminUser(this.userId).subscribe({
         next: (response) => {
-          if(response.error) {
+          if (response.error) {
             console.error('Hubo un error al obtener los archivos del usuario');
             return;
           }
@@ -90,7 +89,7 @@ export class AdminFilesUserComponent implements OnInit {
         },
         error: (err) => {
           console.log(err);
-        }
+        },
       });
     }
   }
@@ -104,29 +103,31 @@ export class AdminFilesUserComponent implements OnInit {
         size: formatBytes(file.sizeFile, 2),
         created_at: this._datePipe.transform(file.created_at, 'dd - MMMM - yyyy'),
         adminMail: file.adminMail,
-        delete: file.id
-      }
+        delete: file.id,
+      };
     });
   }
 
   eventActionSelect(objectEmited: IActionEvent) {
-    const { action, row, column  } = objectEmited;
-    let dialogoRef = this._dialog.open( DialogComponent, {
+    const { action, row, column } = objectEmited;
+    let dialogoRef = this._dialog.open(DialogComponent, {
       width: '250px',
       data: {
-        title: "Eliminar Archivo",
-        message: "Esta seguro en eliminar el archivo?"
+        title: 'Eliminar Archivo',
+        message: 'Esta seguro en eliminar el archivo?',
+      },
+    });
+    dialogoRef.afterClosed().subscribe((dialogResult) => {
+      if (action == 'delete' && action == column.columnDef && dialogResult) {
+        this.deleteFile(row[action]);
       }
     });
-    dialogoRef.afterClosed().subscribe(dialogResult => {
-      if(action == 'delete' && action == column.columnDef && dialogResult ) {
-        this.deleteFile(row[action])
-      }
-   });
   }
 
-  deleteFile( idFile: number = 0) {
-    if (idFile == 0) {return; }
+  deleteFile(idFile: number = 0) {
+    if (idFile == 0) {
+      return;
+    }
     this.isLoadderShow = true;
     this._filesService.removeFileToUser(idFile).subscribe({
       next: (response) => {
@@ -151,11 +152,9 @@ export class AdminFilesUserComponent implements OnInit {
         console.error(error);
         this.isLoadderShow = false;
       },
-      complete:() => {
+      complete: () => {
         this.isLoadderShow = false;
-      }
+      },
     });
-
   }
-
 }

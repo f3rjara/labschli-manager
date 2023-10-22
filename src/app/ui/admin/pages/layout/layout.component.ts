@@ -49,9 +49,9 @@ export class LayoutComponent implements OnInit {
     this._auth.getAuthState$.subscribe({
       next: (user) => {
         this.profileAuthUser = user;
-        console.log(user);
       },
       error: (err) => {
+        console.error(err.error.message);
         this.logout();
       }
     });
