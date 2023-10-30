@@ -21,7 +21,10 @@
               [ngTemplateOutletContext]="{ row: row, column: column }">
             </ng-container>
             <ng-container *ngIf="!column.isLink">
-              <span class="mobile-label">{{ column.header }}:</span> {{ row[column.columnDef] }}
+              <p [title]="row[column.columnDef]">
+                <span class="mobile-label">{{ column.header }} </span>
+                {{ row[column.columnDef] }}
+              </p>
             </ng-container>
           </mat-cell>
         </ng-container>
