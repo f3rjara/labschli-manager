@@ -91,3 +91,19 @@ Para obtener más ayuda sobre Angular CLI, use `ng help` o consulte la página [
 ## Author 🤖
 
 F3RJARA 💚
+
+
+****************************************
+
+# Labchsl
+
+Optimiza tu administración de usuarios y documentos PDF con nuestra plataforma web. Agrega, crea, lista y elimina usuarios con facilidad. Además, comparte archivos PDF para revisión y descarga. Simplifica tus procesos y ahorra tiempo. ¡Regístrate ahora y experimenta la eficiencia en la gestión!
+
+## Features
+
+- Permite gestionar usuarios y administradores
+- Permite asignar a usuarios archivos PDF para su consulta especifica 
+- Permite tener una vista de consulta de archivos mediante numero de documento
+
+
+![alt text](image.png)

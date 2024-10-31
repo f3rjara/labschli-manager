@@ -6,7 +6,6 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [authGuardFn],
     children: [
       {
         path: '',

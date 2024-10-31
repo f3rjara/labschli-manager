@@ -16,7 +16,7 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ListRolesComponent,
-        canActivate: [authGuardFn],
+        //canActivate: [authGuardFn],
       },
     ]
   },

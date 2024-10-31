@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: '',
     component: UsuariosComponent ,
-    canActivate: [authGuardFn],
+    //canActivate: [authGuardFn],
     children: [
       {
         path: '',
